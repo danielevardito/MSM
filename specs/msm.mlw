@@ -1,0 +1,25 @@
+module MSMDiGraph
+
+  use set.Fset
+  use int.Int
+  use list.List
+  use list.Length
+  use list.Mem as LM
+
+  type snippet
+  type metadata
+
+  type v = S snippet | M metadata
+  type e = (v,v)
+
+  let function src (e: e) : v = let (u,_) = e in u
+  let function dst (e: e) : v = let (_,u) = e in u
+
+  clone digraph.DiGraph with
+    type v = v,
+    type e = e,
+    val src = src,
+    val dst = dst,
+    axiom .
+
+end
