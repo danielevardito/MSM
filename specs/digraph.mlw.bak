@@ -14,107 +14,101 @@ theory DiGraph
 
   type graph = { vertices: fset v; edges: fset e }
 
+  (* edge existence *)
+  predicate edgep (g: graph) (v1 v2: v) =
+    exists e: e. mem e g.edges /\ src e = v1  /\ dst e = v2
+
+  (* edges well formed *)
+  axiom edges_well_formed: 
+    forall v1 v2: v, e: e, g: graph. mem e (g.edges) /\ src e = v1 /\ dst e = v2 <-> mem v1 (g.vertices) /\ mem v2 (g.vertices)
+
+  (* Toy lemma to verify axiom works *)
+  lemma vertex_existence:
+    forall v1 v2: v, e: e, g: graph. mem v2 g.vertices /\ mem e g.edges /\ src e = v1 /\ dst e = v2 -> mem v1 (g.vertices) 
+  
+  predicate empty_edges (g: graph) = is_empty g.edges
+  predicate empty_vertices (g: graph) = is_empty g.vertices
+  predicate empty_graph (g: graph) = empty_edges g /\ empty_vertices g
+
+  lemma empty_vertices_to_empty_edges:
+    forall g: graph. empty_vertices g -> empty_edges g
+
+  lemma cardinal_empty_edges:
+    forall g: graph. empty_edges g -> cardinal g.edges = 0
+
+  lemma cardinal_empty_vertices:
+    forall g: graph. empty_vertices g -> cardinal g.vertices = 0
+
+  lemma cardinal_empty_graph:
+    forall g: graph. empty_graph g -> cardinal g.vertices = cardinal g.edges = 0 
+
   predicate memv (v: v) (g: graph) =
     mem v g.vertices
 
   predicate meme (e: e) (g: graph) =
     mem e g.edges
 
-  (* edge existence *)
-  predicate edgep (g: graph) (v1 v2: v) =
-    exists e: e. meme e g /\ src e = v1  /\ dst e = v2
-
-  (* edges well formed *)
-  axiom edges_well_formed: 
-    forall v1 v2: v, e: e, g: graph. meme e g /\ src e = v1 /\ dst e = v2 <-> memv v1 g /\ memv v2 g
-
-  (* Toy lemma to verify axiom works *)
-  lemma vertex_existence:
-    forall v1 v2: v, e: e, g: graph. memv v2 g /\ meme e g /\ src e = v1 /\ dst e = v2 -> memv v1 g
-  
-  predicate empty_edges (g: graph) = is_empty g.edges
-  predicate empty_vertices (g: graph) = is_empty g.vertices
-  predicate empty_graph (g: graph) = empty_edges g /\ empty_vertices g
-
-  val function cardinalv (g: graph) : int
-    ensures { result = cardinal g.vertices }
-  
-  val function cardinale (g: graph) : int
-    ensures { result = cardinal g.edges }
-
-  lemma empty_vertices_to_empty_edges:
-    forall g: graph. empty_vertices g -> empty_edges g
-
-  lemma cardinal_empty_edges:
-    forall g: graph. empty_edges g -> cardinale g = 0
-
-  lemma cardinal_empty_vertices:
-    forall g: graph. empty_vertices g -> cardinalv g = 0
-
-  lemma cardinal_empty_graph:
-    forall g: graph. empty_graph g -> cardinalv g = cardinale g = 0 
-
   val function indegree (v: v) (g: graph) : int
     ensures { result = cardinal (Fset.filter g.edges (fun (p: e) -> dst p = v)) }
     ensures { 0 <= result }
-    ensures { result <= cardinale g }
+    ensures { result <= cardinal g.edges }
 
   val function outdegree (v: v) (g: graph) : int
     ensures { result = cardinal (Fset.filter g.edges (fun (p: e) -> src p = v)) }
     ensures { 0 <= result }
-    ensures { result <= cardinale g }
+    ensures { result <= cardinal g.edges }
 
   val function degree (v: v) (g: graph) : int
     ensures { result = indegree v g + outdegree v g }
     ensures { 0 <= result }
-    ensures { result <= cardinale g }
+    ensures { result <= cardinal g.edges }
 
   (* basic operations *)
   val function insertv (v: v) (g: graph) : graph
-    requires  { forall u:v. memv u g -> u <> v }
+    requires  { forall u:v. mem u g.vertices -> u <> v }
     ensures   { result.edges = g.edges }
     ensures   { result.vertices = Fset.add v g.vertices }
 
   lemma insertv_empty:
-    forall g1 g2: graph, v: v. empty_graph g1 -> g2 = insertv v g1 -> memv v g2 /\ cardinalv g2 = 1
+    forall g1 g2: graph, v: v. empty_graph g1 -> g2 = insertv v g1 -> mem v g2.vertices /\ cardinal g2.vertices = 1
 
   lemma insertv_cardinal:
     forall g1 g2: graph, v: v.
-      (g2 = insertv v g1 /\ forall u:v. memv u g1 -> u <> v) 
-        -> memv v g2 /\ cardinalv g2 = cardinalv g1 + 1
+      (g2 = insertv v g1 /\ forall u:v. mem u g1.vertices -> u <> v) 
+        -> mem v g2.vertices /\ cardinal g2.vertices = cardinal g1.vertices + 1
 
   val function deletev (v: v) (g: graph) : graph
     ensures { result.vertices = Fset.remove v g.vertices }
     ensures { result.edges = Fset.filter g.edges (fun (p: e) -> src p <> v /\ dst p <> v) }
     ensures { degree v result = 0 }
-    ensures { forall u: v. u <> v -> memv u g -> degree u g = degree u result }
+    ensures { forall u: v. u <> v -> mem u g.vertices -> degree u g = degree u result }
 
   lemma deletev_cardinal_vertices:
     forall g1 g2: graph, v: v, n: int. 
-      n = cardinalv g1 /\ 
+      n = cardinal g1.vertices /\ 
       g2 = deletev v g1 
-        -> cardinalv g2 = n \/ cardinalv g2 = n - 1
+        -> cardinal g2.vertices = n \/ cardinal g2.vertices = n - 1
 
   lemma deletev_cardinal_edges:
     forall g1 g2: graph, v: v, n: int. 
-      (n = cardinale g1 /\ 
+      (n = cardinal g1.edges /\ 
       g2 = deletev v g1 /\
-      memv v g1)
-        -> cardinale g2 = n - (degree v g1) 
+      mem v g1.vertices)
+        -> cardinal g2.edges = n - (degree v g1) 
 
   val function inserte (e: e) (g: graph) : graph
-    requires  { memv (src e) g /\ memv (dst e) g }
-    requires  { forall f: e. meme f g -> f <> e }
+    requires  { mem (src e) g.vertices /\ mem (dst e) g.vertices }
+    requires  { forall f: e. mem f g.edges -> f <> e }
     ensures   { result.vertices = g.vertices }
     ensures   { result.edges = Fset.add e g.edges }
   
   lemma inserte_cardinal_edges:
     forall g1 g2: graph, e: e, n: int. 
-      (n = cardinale g1 /\ 
+      (n = cardinal g1.edges /\ 
       g2 = inserte e g1 /\ 
-      memv (src e) g1 /\ memv (dst e) g1 /\
-      forall f: e. meme f g1 -> f <> e)
-        -> meme e g2 /\ cardinale g2 = (n + 1)
+      mem (src e) g1.vertices /\ mem (dst e) g1.vertices /\
+      forall f: e. mem f g1.edges -> f <> e)
+        -> mem e g2.edges /\ cardinal g2.edges = (n + 1)
 
   val function deletee (e: e) (g: graph) : graph
     ensures { result.edges = Fset.remove e g.edges }
@@ -122,9 +116,9 @@ theory DiGraph
 
   lemma deletee_cardinal_edges:
     forall g1 g2: graph, e: e, n: int. 
-      n = cardinale g1 /\
+      n = cardinal g1.edges /\
       g2 = deletee e g1 
-        -> cardinale g2 = n \/ cardinale g2 = (n-1)
+        -> cardinal g2.edges = n \/ cardinal g2.edges = (n-1)
 
   val function fset_to_list (s: fset 'a) : list 'a
     ensures { forall x: 'a. Fset.mem x s -> LM.mem x result }
@@ -173,7 +167,7 @@ theory DiGraph
 
   lemma members_successors:
     forall g: graph, v: v, succ: fset v. succ = successors v g ->
-      (forall u: v. mem u succ <-> (exists e: e. meme e g /\ src e = v /\ dst e = u))
+      (forall u: v. mem u succ <-> (exists e: e. mem e g.edges /\ src e = v /\ dst e = u))
 
   val function edges_dstv (v: v) (g: graph) : fset e
     ensures { result = Fset.filter g.edges (fun (p:e) -> dst p = v) }
@@ -186,11 +180,11 @@ theory DiGraph
 
   lemma members_predecessors:
     forall g: graph, v: v, pred: fset v. pred = predecessors v g ->
-      (forall u: v. mem v pred <-> (exists e: e. meme e g /\  src e = u /\ dst e = v) )
+      (forall u: v. mem v pred <-> (exists e: e. mem e g.edges /\  src e = u /\ dst e = v) )
 
-  (* Definizioni semplificate; le originali erano logicamente equivalenti a 'true' o 'memv'/'meme' *)
   predicate existsv (v: v) (g: graph) =
-    memv v g
+    mem v g.vertices -> true \/ 
+    forall u: v. (mem u g.vertices -> u <> v) -> false
 
   lemma not_existsv_empty:
     forall g: graph, v: v. empty_graph g -> not (existsv v g)
@@ -202,7 +196,8 @@ theory DiGraph
     forall g1, g2: graph, v: v. g2 = deletev v g1 -> not (existsv v g2)
 
   predicate existse (e: e) (g: graph) =
-    meme e g
+    mem e g.edges -> true \/
+    forall f: e. (mem f g.edges -> f <> e) -> false
 
   lemma not_existse_empty:
     forall g: graph, e: e. empty_graph g -> not (existse e g)
