@@ -22,4 +22,58 @@ module MSMDiGraph
     val dst = dst,
     axiom .
 
+  predicate is_metadata (v: v) =
+    match v with
+    | M _ -> true
+    | S _ -> false
+    end
+
+  predicate is_snippet (v: v) =
+    match v with
+    | M _ -> false
+    | S _ -> true
+    end
+
+  val function metadata_indegree (v: v) (g: graph) : int
+    requires  { is_metadata v }
+    ensures   { result = cardinal (Fset.filter g.edges (fun (p: e) -> dst p = v /\ is_metadata (src p))) }
+    ensures   { 0 <= result }
+    ensures   { result <= cardinale g }
+
+  lemma metadata_indegree_le_indegree:
+    forall g: graph, v: v. memv v g /\ is_metadata v -> metadata_indegree v g <= indegree v g
+
+  val function metadata_outdegree (v: v) (g: graph) : int
+    requires  { is_metadata v }
+    ensures   { result = cardinal (Fset.filter g.edges (fun (p: e) -> src p = v /\ is_metadata (dst p))) }
+    ensures   { 0 <= result }
+    ensures   { result <= cardinale g } 
+
+  lemma metadata_outdegree_le_outdegree:
+    forall g: graph, v: v. memv v g /\ is_metadata v -> metadata_outdegree v g <= outdegree v g
+
+  axiom metadata_metadata_valid_relations:
+    forall g: graph, v: v. memv v g /\ is_metadata v 
+      -> 0 <= metadata_indegree v g <= 1 /\ 0 <= metadata_outdegree v g /\ metadata_outdegree v g = outdegree v g
+
+  val function snippet_metadata_outdegree (v: v) (g: graph) : int
+    requires  { is_snippet v }
+    ensures   { result = cardinal (Fset.filter g.edges (fun (p: e) -> src p = v /\ is_metadata (dst p))) }
+    ensures   { 0 <= result }
+    ensures   { result <= cardinale g } 
+
+  val function snippet_metadata_indegree (v: v) (g: graph) : int
+    requires  { is_metadata v }
+    ensures   { result = cardinal (Fset.filter g.edges (fun (p: e) -> dst p = v /\ is_snippet (src p))) }
+    ensures   { 0 <= result }
+    ensures   { result <= cardinale g } 
+
+  lemma metadata_degree:
+    forall g: graph, v: v. memv v g /\ is_metadata v
+      -> degree v g = metadata_indegree v g + snippet_metadata_indegree v g + metadata_outdegree v g
+
+  axiom snippet_metadata_valid_relation:
+    forall g: graph, s: v. is_snippet s /\ memv s g
+      -> indegree s g = 0 /\ outdegree s g = snippet_metadata_outdegree s g >= 1
+
 end
