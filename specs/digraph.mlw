@@ -176,4 +176,36 @@ theory DiGraph
     forall g: graph, v: v, pred: fset v. pred = predecessors v g ->
       (forall u: v. mem v pred <-> (exists e: e. mem e g.edges /\  src e = u /\ dst e = v) )
 
+  predicate existsv (v: v) (g: graph) =
+    mem v g.vertices -> true \/ 
+    forall u: v. (mem u g.vertices -> u <> v) -> false
+
+  lemma not_existsv_empty:
+    forall g: graph, v: v. empty_graph g -> not (existsv v g)
+
+  lemma insertv_exists:
+    forall g1, g2: graph, v: v. g2 = insertv v g1 -> existsv v g2
+
+  lemma deletev_not_exists:
+    forall g1, g2: graph, v: v. g2 = deletev v g1 -> not (existsv v g2)
+
+  predicate existse (e: e) (g: graph) =
+    mem e g.edges -> true \/
+    forall f: e. (mem f g.edges -> f <> e) -> false
+
+  lemma not_existse_empty:
+    forall g: graph, e: e. empty_graph g -> not (existse e g)
+
+  lemma inserte_exists:
+    forall g1, g2: graph, e: e. g2 = inserte e g1 -> existse e g2
+
+  lemma deletee_not_exists:
+    forall g1, g2: graph, e: e. g2 = deletee e g1 -> not (existse e g2)
+
+  lemma deletev_not_existsev:
+    forall g1, g2: graph, v, u: v.
+      (forall e: e. (src e = v \/ src e = u \/ dst e = v \/ dst e = u)
+         -> g2 = deletev u (deletev v g1)
+          -> not (existsv v g2) /\ not (existsv u g2) /\ not (existse e g2) )
+
 end

@@ -84,27 +84,6 @@
  <goal name="members_predecessors" proved="true">
  <proof prover="2"><result status="valid" time="0.023209" steps="110431"/></proof>
  </goal>
- <goal name="not_existsv_empty" proved="true">
- <proof prover="2"><result status="valid" time="0.215312" steps="815483"/></proof>
- </goal>
- <goal name="insertv_exists" proved="true">
- <proof prover="2"><result status="valid" time="0.028758" steps="66205"/></proof>
- </goal>
- <goal name="deletev_not_exists" proved="true">
- <proof prover="2"><result status="valid" time="0.046120" steps="78829"/></proof>
- </goal>
- <goal name="not_existse_empty" proved="true">
- <proof prover="2"><result status="valid" time="0.209077" steps="803103"/></proof>
- </goal>
- <goal name="inserte_exists" proved="true">
- <proof prover="2"><result status="valid" time="0.035130" steps="67270"/></proof>
- </goal>
- <goal name="deletee_not_exists" proved="true">
- <proof prover="2"><result status="valid" time="0.039954" steps="76861"/></proof>
- </goal>
- <goal name="deletev_not_existsev" proved="true">
- <proof prover="2"><result status="valid" time="0.044358" steps="88904"/></proof>
- </goal>
 </theory>
 </file>
 </why3session>
