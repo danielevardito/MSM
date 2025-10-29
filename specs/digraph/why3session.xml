@@ -2,172 +2,106 @@
 <!DOCTYPE why3session PUBLIC "-//Why3//proof session v5//EN"
 "https://www.why3.org/why3session.dtd">
 <why3session shape_version="6">
-<prover id="0" name="CVC4" version="1.8" timelimit="1" steplimit="0" memlimit="1000"/>
+<prover id="0" name="CVC4" version="1.8" timelimit="5" steplimit="0" memlimit="1000"/>
 <prover id="1" name="Alt-Ergo" version="2.0.0" timelimit="1" steplimit="0" memlimit="1000"/>
 <prover id="2" name="Z3" version="4.10.2" timelimit="1" steplimit="0" memlimit="1000"/>
-<file format="whyml">
+<file format="whyml" proved="true">
 <path name=".."/><path name="digraph.mlw"/>
-<theory name="DiGraph">
+<theory name="DiGraph" proved="true">
  <goal name="vertex_existence" proved="true">
- <proof prover="2"><result status="valid" time="0.015558" steps="29521"/></proof>
+ <proof prover="2"><result status="valid" time="0.015558" steps="30150"/></proof>
  </goal>
  <goal name="empty_vertices_to_empty_edges" proved="true">
  <proof prover="1"><result status="valid" time="0.016732" steps="21"/></proof>
  </goal>
  <goal name="cardinal_empty_edges" proved="true">
- <proof prover="2"><result status="valid" time="0.013254" steps="30680"/></proof>
+ <proof prover="2"><result status="valid" time="0.013254" steps="31307"/></proof>
  </goal>
  <goal name="cardinal_empty_vertices" proved="true">
- <proof prover="2"><result status="valid" time="0.012892" steps="31320"/></proof>
+ <proof prover="2"><result status="valid" time="0.012892" steps="31947"/></proof>
  </goal>
  <goal name="cardinal_empty_graph" proved="true">
- <proof prover="2"><result status="valid" time="0.016194" steps="32167"/></proof>
+ <proof prover="2"><result status="valid" time="0.016194" steps="32794"/></proof>
  </goal>
  <goal name="indegree_bound" proved="true">
- <proof prover="2"><result status="valid" time="0.015491" steps="35375"/></proof>
+ <proof prover="2"><result status="valid" time="0.015491" steps="36002"/></proof>
  </goal>
  <goal name="outdegree_bound" proved="true">
- <proof prover="2"><result status="valid" time="0.014318" steps="36516"/></proof>
+ <proof prover="2"><result status="valid" time="0.014318" steps="37143"/></proof>
  </goal>
  <goal name="cardinal_self_loop_bound" proved="true">
- <proof prover="2"><result status="valid" time="0.017976" steps="40014"/></proof>
+ <proof prover="2"><result status="valid" time="0.017976" steps="40701"/></proof>
  </goal>
  <goal name="self_loopv" proved="true">
- <proof prover="1"><result status="valid" time="0.021982" steps="53"/></proof>
+ <proof prover="1"><result status="valid" time="0.021982" steps="54"/></proof>
+ </goal>
+ <goal name="nb_edgesv_list" proved="true">
+ <proof prover="0" timelimit="1" obsolete="true"><result status="timeout" time="1.000000" steps="668847"/></proof>
+ <proof prover="1" obsolete="true"><result status="unknown" time="0.016184" steps="8"/></proof>
+ <proof prover="2" obsolete="true"><result status="timeout" time="1.000000"/></proof>
+ <transf name="split_vc" proved="true" >
+  <goal name="nb_edgesv_list.0" proved="true">
+  <proof prover="2"><result status="valid" time="0.029227" steps="48377"/></proof>
+  </goal>
+ </transf>
  </goal>
  <goal name="degree_sum" proved="true">
- <proof prover="2"><result status="valid" time="0.016160" steps="42252"/></proof>
+ <proof prover="2"><result status="valid" time="0.016160" steps="46220"/></proof>
  </goal>
  <goal name="insertv_empty" proved="true">
- <proof prover="2"><result status="valid" time="0.028978" steps="86627"/></proof>
+ <proof prover="2"><result status="valid" time="0.181345" steps="127701"/></proof>
+ </goal>
+ <goal name="insertv_memv" proved="true">
+ <proof prover="2"><result status="valid" time="0.170555" steps="260929"/></proof>
  </goal>
  <goal name="insertv_cardinal" proved="true">
- <proof prover="2"><result status="valid" time="0.079259" steps="220896"/></proof>
+ <proof prover="2"><result status="valid" time="0.158944" steps="322743"/></proof>
  </goal>
  <goal name="empty_fset_to_list" proved="true">
- <proof prover="2"><result status="valid" time="0.018615" steps="54481"/></proof>
+ <proof prover="2"><result status="valid" time="0.018615" steps="57134"/></proof>
  </goal>
  <goal name="cardinal_eq_length" proved="true">
- <proof prover="2"><result status="valid" time="0.020816" steps="61011"/></proof>
- </goal>
- <goal name="nb_edgesv_set">
- <proof prover="0"><result status="timeout" time="1.000000" steps="462249"/></proof>
- <proof prover="1"><result status="unknown" time="0.148150" steps="151"/></proof>
- <proof prover="2"><result status="timeout" time="1.000000"/></proof>
- <transf name="split_vc" >
-  <goal name="nb_edgesv_set.0">
-  <proof prover="0" timelimit="30" memlimit="4000"><undone/></proof>
-  <proof prover="1" timelimit="30" memlimit="4000"><undone/></proof>
-  <proof prover="2" timelimit="30" memlimit="4000"><undone/></proof>
-  </goal>
- </transf>
- </goal>
- <goal name="nb_edgesv_list">
- <proof prover="0"><result status="timeout" time="1.000000" steps="668847"/></proof>
- <proof prover="1"><result status="unknown" time="0.016184" steps="8"/></proof>
- <proof prover="2"><result status="timeout" time="1.000000"/></proof>
- <transf name="split_vc" >
-  <goal name="nb_edgesv_list.0">
-  <proof prover="0" timelimit="30" memlimit="4000"><undone/></proof>
-  <proof prover="1" timelimit="30" memlimit="4000"><undone/></proof>
-  <proof prover="2" timelimit="30" memlimit="4000"><undone/></proof>
-  </goal>
- </transf>
+ <proof prover="2"><result status="valid" time="0.020816" steps="63664"/></proof>
  </goal>
  <goal name="edgesv_empty" proved="true">
- <proof prover="2"><result status="valid" time="0.046003" steps="125032"/></proof>
+ <proof prover="2"><result status="valid" time="0.046003" steps="114576"/></proof>
  </goal>
  <goal name="degree_deletev" proved="true">
- <proof prover="2"><result status="valid" time="0.020598" steps="60624"/></proof>
+ <proof prover="2"><result status="valid" time="0.020598" steps="59030"/></proof>
  </goal>
- <goal name="degree_deletevu_bound">
- <proof prover="0"><result status="timeout" time="1.000000" steps="511069"/></proof>
- <proof prover="1"><result status="unknown" time="0.018129" steps="4"/></proof>
- <proof prover="2"><result status="timeout" time="1.000000"/></proof>
- <transf name="split_vc" >
-  <goal name="degree_deletevu_bound.0">
-  <proof prover="0" timelimit="5" memlimit="2000"><result status="timeout" time="5.000000" steps="2061756"/></proof>
-  <proof prover="1" timelimit="5" memlimit="2000"><result status="unknown" time="0.013985" steps="4"/></proof>
-  <proof prover="2" timelimit="5" memlimit="2000"><result status="timeout" time="5.000000"/></proof>
-  <transf name="inline_goal" >
-   <goal name="degree_deletevu_bound.0.0">
-   <transf name="split_all_full" >
-    <goal name="degree_deletevu_bound.0.0.0">
-    <proof prover="2"><undone/></proof>
-    </goal>
-   </transf>
-   </goal>
-  </transf>
-  </goal>
-  <goal name="degree_deletevu_bound.1">
-  <proof prover="0" timelimit="5" memlimit="2000"><result status="timeout" time="5.000000" steps="2061865"/></proof>
-  <proof prover="1" timelimit="5" memlimit="2000"><result status="unknown" time="0.012640" steps="4"/></proof>
-  <proof prover="2" timelimit="5" memlimit="2000"><result status="timeout" time="4.300418"/></proof>
-  <transf name="inline_goal" >
-   <goal name="degree_deletevu_bound.1.0">
-   <transf name="split_all_full" >
-    <goal name="degree_deletevu_bound.1.0.0">
-    <proof prover="2"><undone/></proof>
-    </goal>
-   </transf>
-   </goal>
-  </transf>
-  </goal>
- </transf>
+ <goal name="deletev_notmemv" proved="true">
+ <proof prover="2"><result status="valid" time="0.020279" steps="59817"/></proof>
  </goal>
  <goal name="deletev_cardinal_vertices" proved="true">
- <proof prover="2"><result status="valid" time="0.038323" steps="113353"/></proof>
+ <proof prover="2"><result status="valid" time="0.038323" steps="103622"/></proof>
  </goal>
  <goal name="deletev_cardinal_edges" proved="true">
- <proof prover="1"><result status="valid" time="0.139300" steps="534"/></proof>
+ <proof prover="1"><result status="valid" time="0.189102" steps="403"/></proof>
  </goal>
- <goal name="inserte_cardinal_edges" proved="true">
- <proof prover="1"><result status="valid" time="0.029855" steps="109"/></proof>
+ <goal name="deletev_notmeme" proved="true">
+ <proof prover="2"><result status="valid" time="0.020839" steps="62832"/></proof>
  </goal>
- <goal name="deletee_cardinal_edges" proved="true">
- <proof prover="2"><result status="valid" time="0.059488" steps="168183"/></proof>
- </goal>
- <goal name="members_successors" proved="true">
- <proof prover="1"><result status="valid" time="0.033717" steps="144"/></proof>
- </goal>
- <goal name="members_predecessors" proved="true">
- <proof prover="1"><result status="valid" time="0.040604" steps="145"/></proof>
- </goal>
- <goal name="not_existsv_empty" proved="true">
- <proof prover="2"><result status="valid" time="0.021057" steps="68449"/></proof>
- </goal>
- <goal name="insertv_exists">
- <proof prover="0"><result status="timeout" time="1.000000" steps="425694"/></proof>
- <proof prover="1"><result status="timeout" time="1.000000"/></proof>
- <proof prover="2"><result status="timeout" time="1.000000"/></proof>
- <transf name="split_vc" >
-  <goal name="insertv_exists.0">
-  <proof prover="0" timelimit="5" memlimit="2000"><undone/></proof>
-  <proof prover="1" timelimit="5" memlimit="2000"><undone/></proof>
-  <proof prover="2" timelimit="5" memlimit="2000"><result status="timeout" time="5.000000"/></proof>
-  </goal>
- </transf>
- </goal>
- <goal name="deletev_not_exists" proved="true">
- <proof prover="2"><result status="valid" time="0.020279" steps="74197"/></proof>
- </goal>
- <goal name="not_existse_empty" proved="true">
- <proof prover="2"><result status="valid" time="0.018934" steps="69760"/></proof>
- </goal>
- <goal name="inserte_exists">
- <proof prover="0"><result status="timeout" time="1.000000" steps="505739"/></proof>
- <proof prover="1"><result status="timeout" time="1.000000"/></proof>
- <proof prover="2"><result status="timeout" time="1.000000"/></proof>
- <transf name="split_vc" >
-  <goal name="inserte_exists.0">
-  <proof prover="0" timelimit="5" memlimit="2000"><result status="timeout" time="5.000000" steps="2528162"/></proof>
-  <proof prover="1" timelimit="5" memlimit="2000"><result status="timeout" time="5.000000"/></proof>
-  <proof prover="2" timelimit="5" memlimit="2000"><result status="timeout" time="5.000000"/></proof>
-  <transf name="inline_goal" >
-   <goal name="inserte_exists.0.0">
-   <transf name="split_all_full" >
-    <goal name="inserte_exists.0.0.0">
-    <proof prover="2"><undone/></proof>
+ <goal name="meme_inserte" proved="true">
+ <proof prover="0" timelimit="1" obsolete="true"><result status="timeout" time="1.000000" steps="505739"/></proof>
+ <proof prover="1" obsolete="true"><result status="timeout" time="1.000000"/></proof>
+ <proof prover="2" obsolete="true"><result status="timeout" time="1.000000"/></proof>
+ <transf name="split_vc" proved="true" >
+  <goal name="meme_inserte.0" proved="true">
+  <proof prover="0" memlimit="2000" obsolete="true"><result status="timeout" time="5.000000" steps="2528162"/></proof>
+  <proof prover="1" timelimit="5" memlimit="2000" obsolete="true"><result status="timeout" time="5.000000"/></proof>
+  <proof prover="2" timelimit="5" memlimit="2000" obsolete="true"><result status="timeout" time="5.000000"/></proof>
+  <transf name="inline_goal" proved="true" >
+   <goal name="meme_inserte.0.0" proved="true">
+   <transf name="split_all_full" proved="true" >
+    <goal name="meme_inserte.0.0.0" proved="true">
+    <proof prover="0" memlimit="2000" obsolete="true"><result status="timeout" time="5.000000" steps="2529659"/></proof>
+    <proof prover="1" timelimit="5" memlimit="2000" obsolete="true"><result status="timeout" time="5.000000"/></proof>
+    <proof prover="2" timelimit="5" memlimit="2000" obsolete="true"><result status="timeout" time="5.000000"/></proof>
+    <transf name="inline_goal" proved="true" >
+     <goal name="meme_inserte.0.0.0.0" proved="true">
+     <proof prover="1"><result status="valid" time="0.031349" steps="40"/></proof>
+     </goal>
+    </transf>
     </goal>
    </transf>
    </goal>
@@ -175,16 +109,20 @@
   </goal>
  </transf>
  </goal>
- <goal name="deletee_not_exists" proved="true">
- <proof prover="2"><result status="valid" time="0.020839" steps="72355"/></proof>
+ <goal name="inserte_cardinal_edges" proved="true">
+ <proof prover="1"><result status="valid" time="0.029855" steps="84"/></proof>
  </goal>
- <goal name="deletev_not_existsev" proved="true">
- <proof prover="2"><result status="valid" time="0.141240" steps="398505"/></proof>
+ <goal name="deletee_cardinal_edges" proved="true">
+ <proof prover="2"><result status="valid" time="0.059488" steps="163697"/></proof>
  </goal>
- <goal name="lemma_false">
- <proof prover="0" timelimit="30" memlimit="4000"><result status="unknown" time="0.048028" steps="16850"/></proof>
- <proof prover="1" timelimit="30" memlimit="4000"><result status="unknown" time="0.015010" steps="1"/></proof>
- <proof prover="2" timelimit="30" memlimit="4000"><result status="timeout" time="30.000000"/></proof>
+ <goal name="delete_empty" proved="true">
+ <proof prover="2"><result status="valid" time="0.141240" steps="62660"/></proof>
+ </goal>
+ <goal name="members_successors" proved="true">
+ <proof prover="1"><result status="valid" time="0.033717" steps="143"/></proof>
+ </goal>
+ <goal name="members_predecessors" proved="true">
+ <proof prover="1"><result status="valid" time="0.040604" steps="144"/></proof>
  </goal>
 </theory>
 </file>
