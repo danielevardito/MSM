@@ -2,7 +2,31 @@
 <!DOCTYPE why3session PUBLIC "-//Why3//proof session v5//EN"
 "https://www.why3.org/why3session.dtd">
 <why3session shape_version="6">
-<file format="whyml">
+<prover id="0" name="Z3" version="4.10.2" timelimit="1" steplimit="0" memlimit="1000"/>
+<file format="whyml" proved="true">
 <path name=".."/><path name="msm.mlw"/>
+<theory name="MSMDiGraph" proved="true">
+ <goal name="metadata_indegree_le_cardinale" proved="true">
+ <proof prover="0"><result status="valid" time="0.018075" steps="74492"/></proof>
+ </goal>
+ <goal name="metadata_indegree_le_indegree" proved="true">
+ <proof prover="0"><result status="valid" time="0.035047" steps="75144"/></proof>
+ </goal>
+ <goal name="metadata_outdegree_le_cardinale" proved="true">
+ <proof prover="0"><result status="valid" time="0.019401" steps="76745"/></proof>
+ </goal>
+ <goal name="metadata_outdegree_le_outdegree" proved="true">
+ <proof prover="0"><result status="valid" time="0.036996" steps="77527"/></proof>
+ </goal>
+ <goal name="snippet_metadata_outdegree_le_cardinale" proved="true">
+ <proof prover="0"><result status="valid" time="0.020766" steps="80061"/></proof>
+ </goal>
+ <goal name="snippet_metadata_indegree_le_cardinale" proved="true">
+ <proof prover="0"><result status="valid" time="0.022575" steps="86795"/></proof>
+ </goal>
+ <goal name="metadata_degree" proved="true">
+ <proof prover="0"><result status="valid" time="0.016744" steps="84022"/></proof>
+ </goal>
+</theory>
 </file>
 </why3session>

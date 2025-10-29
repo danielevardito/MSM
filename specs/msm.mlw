@@ -37,8 +37,10 @@ module MSMDiGraph
   val function metadata_indegree (v: v) (g: graph) : int
     requires  { is_metadata v }
     ensures   { result = cardinal (Fset.filter g.edges (fun (p: e) -> dst p = v /\ is_metadata (src p))) }
-    ensures   { 0 <= result }
-    ensures   { result <= cardinale g }
+
+  lemma metadata_indegree_le_cardinale:
+    forall v: v, g: graph. is_metadata v
+      -> 0 <= metadata_indegree v g <= cardinale g
 
   lemma metadata_indegree_le_indegree:
     forall g: graph, v: v. memv v g /\ is_metadata v -> metadata_indegree v g <= indegree v g
@@ -46,8 +48,10 @@ module MSMDiGraph
   val function metadata_outdegree (v: v) (g: graph) : int
     requires  { is_metadata v }
     ensures   { result = cardinal (Fset.filter g.edges (fun (p: e) -> src p = v /\ is_metadata (dst p))) }
-    ensures   { 0 <= result }
-    ensures   { result <= cardinale g } 
+
+  lemma metadata_outdegree_le_cardinale:
+    forall v: v, g: graph. is_metadata v
+      -> 0 <= metadata_outdegree v g <= cardinale g
 
   lemma metadata_outdegree_le_outdegree:
     forall g: graph, v: v. memv v g /\ is_metadata v -> metadata_outdegree v g <= outdegree v g
@@ -59,14 +63,18 @@ module MSMDiGraph
   val function snippet_metadata_outdegree (v: v) (g: graph) : int
     requires  { is_snippet v }
     ensures   { result = cardinal (Fset.filter g.edges (fun (p: e) -> src p = v /\ is_metadata (dst p))) }
-    ensures   { 0 <= result }
-    ensures   { result <= cardinale g } 
+
+  lemma snippet_metadata_outdegree_le_cardinale:
+    forall v: v, g: graph. is_snippet v
+      -> 0 <= snippet_metadata_outdegree v g <= cardinale g
 
   val function snippet_metadata_indegree (v: v) (g: graph) : int
     requires  { is_metadata v }
     ensures   { result = cardinal (Fset.filter g.edges (fun (p: e) -> dst p = v /\ is_snippet (src p))) }
-    ensures   { 0 <= result }
-    ensures   { result <= cardinale g } 
+
+  lemma snippet_metadata_indegree_le_cardinale:
+    forall v: v, g: graph. is_snippet v
+      -> 0 <= snippet_metadata_indegree v g <= cardinale g
 
   lemma metadata_degree:
     forall g: graph, v: v. memv v g /\ is_metadata v
@@ -75,5 +83,14 @@ module MSMDiGraph
   axiom snippet_metadata_valid_relation:
     forall g: graph, s: v. is_snippet s /\ memv s g
       -> indegree s g = 0 /\ outdegree s g = snippet_metadata_outdegree s g >= 1
+
+  axiom no_self_loops:
+    forall g: graph, e: e. src e <> dst e
+
+  lemma cardinal_self_loop_zero:  
+    forall g: graph. cardinal_self_loop g = 0
+
+  lemma degree_sum3:
+    forall g: graph, v: v. degree v g = indegree v g + outdegree v g
 
 end

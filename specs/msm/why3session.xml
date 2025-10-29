@@ -6,14 +6,32 @@
 <file format="whyml" proved="true">
 <path name=".."/><path name="msm.mlw"/>
 <theory name="MSMDiGraph" proved="true">
+ <goal name="metadata_indegree_le_cardinale" proved="true">
+ <proof prover="0"><result status="valid" time="0.018075" steps="80476"/></proof>
+ </goal>
  <goal name="metadata_indegree_le_indegree" proved="true">
- <proof prover="0"><result status="valid" time="0.035047" steps="75285"/></proof>
+ <proof prover="0"><result status="valid" time="0.035047" steps="79909"/></proof>
+ </goal>
+ <goal name="metadata_outdegree_le_cardinale" proved="true">
+ <proof prover="0"><result status="valid" time="0.019401" steps="82729"/></proof>
  </goal>
  <goal name="metadata_outdegree_le_outdegree" proved="true">
- <proof prover="0"><result status="valid" time="0.036996" steps="77810"/></proof>
+ <proof prover="0"><result status="valid" time="0.036996" steps="82362"/></proof>
+ </goal>
+ <goal name="snippet_metadata_outdegree_le_cardinale" proved="true">
+ <proof prover="0"><result status="valid" time="0.020766" steps="86045"/></proof>
+ </goal>
+ <goal name="snippet_metadata_indegree_le_cardinale" proved="true">
+ <proof prover="0"><result status="valid" time="0.022575" steps="98308"/></proof>
  </goal>
  <goal name="metadata_degree" proved="true">
- <proof prover="0"><result status="valid" time="0.016744" steps="82680"/></proof>
+ <proof prover="0"><result status="valid" time="0.016744" steps="89627"/></proof>
+ </goal>
+ <goal name="cardinal_self_loop_zero" proved="true">
+ <proof prover="0"><result status="valid" time="0.038204" steps="89842"/></proof>
+ </goal>
+ <goal name="degree_sum3" proved="true">
+ <proof prover="0"><result status="valid" time="0.047078" steps="101809"/></proof>
  </goal>
 </theory>
 </file>

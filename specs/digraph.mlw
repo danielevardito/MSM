@@ -56,18 +56,50 @@ theory DiGraph
 
   val function indegree (v: v) (g: graph) : int
     ensures { result = cardinal (Fset.filter g.edges (fun (p: e) -> dst p = v)) }
-    ensures { 0 <= result }
-    ensures { result <= cardinale g }
+
+  lemma indegree_bound:
+    forall v: v, g: graph. 0 <= indegree v g <= cardinale g
 
   val function outdegree (v: v) (g: graph) : int
     ensures { result = cardinal (Fset.filter g.edges (fun (p: e) -> src p = v)) }
-    ensures { 0 <= result }
-    ensures { result <= cardinale g }
+  
+  lemma outdegree_bound:
+    forall v: v, g: graph. 0 <= outdegree v g <= cardinale g
+
+  val function cardinal_self_loop (g: graph) : int
+    ensures { result = cardinal (Fset.filter g.edges (fun (p: e) -> src p = dst p)) }
+
+  lemma cardinal_self_loop_bound:
+    forall g: graph, n: int. n = cardinal_self_loop g -> 0 <= n <= cardinale g
+
+  lemma self_loopv:
+    forall g: graph, v: v.  
+      let self_loop_setv = Fset.filter g.edges (fun (p: e) -> src p = dst p) in
+      0 <= cardinal self_loop_setv <= 1 /\
+      cardinal_self_loop g = 0 -> cardinal self_loop_setv = 0 -> (forall e: e. meme e g -> (src e = v \/ dst e = v) -> src e <> dst e) 
 
   val function degree (v: v) (g: graph) : int
-    ensures { result = indegree v g + outdegree v g }
-    ensures { 0 <= result }
-    ensures { result <= cardinale g }
+    ensures { result = cardinal (Fset.filter g.edges (fun (p: e) -> src p = v \/ dst p = v)) }
+
+  lemma degree_bound:
+    forall v: v, g: graph, n: int.
+      n = degree v g -> 0 <= n <= cardinale g
+
+  lemma degree_sum:
+    forall g: graph, v: v, e: e. meme e g ->
+      src e = dst e = v -> degree v g = indegree v g + outdegree v g - 1 /\
+      (src e = v \/ dst e = v) /\ src e <> dst e -> degree v g = indegree v g + outdegree v g 
+
+  (*
+  lemma degree_sum2:
+    forall g: graph, v: v.
+      cardinal_self_loop g = 0 -> degree v g = indegree v g + outdegree v g
+      *)
+  (*
+  axiom degree_sum:
+    forall g: graph, v: v.
+      cardinal_self_loop g = 0 -> degree v g = indegree v g + outdegree v g
+      *)
 
   (* basic operations *)
   val function insertv (v: v) (g: graph) : graph
