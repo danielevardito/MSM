@@ -33,64 +33,106 @@ module MSMDiGraph
     | M _ -> false
     | S _ -> true
     end
-
+  
   val function metadata_indegree (v: v) (g: graph) : int
     requires  { is_metadata v }
     ensures   { result = cardinal (Fset.filter g.edges (fun (p: e) -> dst p = v /\ is_metadata (src p))) }
-
-  lemma metadata_indegree_le_cardinale:
-    forall v: v, g: graph. is_metadata v
-      -> 0 <= metadata_indegree v g <= cardinale g
-
-  lemma metadata_indegree_le_indegree:
-    forall g: graph, v: v. memv v g /\ is_metadata v -> metadata_indegree v g <= indegree v g
 
   val function metadata_outdegree (v: v) (g: graph) : int
     requires  { is_metadata v }
     ensures   { result = cardinal (Fset.filter g.edges (fun (p: e) -> src p = v /\ is_metadata (dst p))) }
 
-  lemma metadata_outdegree_le_cardinale:
-    forall v: v, g: graph. is_metadata v
-      -> 0 <= metadata_outdegree v g <= cardinale g
-
-  lemma metadata_outdegree_le_outdegree:
-    forall g: graph, v: v. memv v g /\ is_metadata v -> metadata_outdegree v g <= outdegree v g
-
-  axiom metadata_metadata_valid_relations:
-    forall g: graph, v: v. memv v g /\ is_metadata v 
-      -> 0 <= metadata_indegree v g <= 1 /\ 0 <= metadata_outdegree v g /\ metadata_outdegree v g = outdegree v g
-
   val function snippet_metadata_outdegree (v: v) (g: graph) : int
     requires  { is_snippet v }
     ensures   { result = cardinal (Fset.filter g.edges (fun (p: e) -> src p = v /\ is_metadata (dst p))) }
-
-  lemma snippet_metadata_outdegree_le_cardinale:
-    forall v: v, g: graph. is_snippet v
-      -> 0 <= snippet_metadata_outdegree v g <= cardinale g
 
   val function snippet_metadata_indegree (v: v) (g: graph) : int
     requires  { is_metadata v }
     ensures   { result = cardinal (Fset.filter g.edges (fun (p: e) -> dst p = v /\ is_snippet (src p))) }
 
+  axiom metadata_metadata_valid_relations:
+    forall g: graph, v: v. memv v g /\ is_metadata v 
+      -> 0 <= metadata_indegree v g <= 1 /\ 0 <= metadata_outdegree v g 
+  axiom valid_metadatasrc_edges:
+    forall g: graph, e: e. meme e g ->
+      is_metadata (src e) -> is_metadata (dst e) 
+  axiom valid_snippetsrc_edges:
+    forall g: graph, e:e. meme e g ->
+      is_snippet (src e) -> is_metadata (dst e)
+  axiom no_self_loops:
+    forall g: graph, e: e. meme e g -> src e <> dst e
+  axiom minimum_metadata:
+    forall g: graph, s: v. is_snippet s /\ memv s g -> 
+      exists e: e. meme e g /\ src e = s
+  axiom metadata_outdegree_eq: (* secondary axiom, should be lemma *)
+    forall g: graph, m: v. memv m g /\ is_metadata m -> metadata_outdegree m g = outdegree m g
+
+  lemma metadata_src_implies_dst:
+    forall g: graph, e: e, m: v.
+      meme e g /\ src e = m /\ is_metadata m -> is_metadata (dst e)
+
+  lemma metadata_out_eq:
+    forall g: graph, m: v. 
+      let out_set_m = Fset.filter g.edges (fun (p: e) -> src p = m /\ is_metadata (dst p)) in
+      let out_set = Fset.filter g.edges (fun (p: e) -> src p = m) in
+      (forall e: e. mem e out_set_m <-> mem e out_set) ->
+      out_set_m = out_set
+
+  lemma metadata_indegree_le_cardinale:
+    forall v: v, g: graph. memv v g /\ is_metadata v
+      -> 0 <= metadata_indegree v g <= cardinale g
+
+  axiom metadata_indegree_le_indegree: (* should be lemma *)
+    forall g: graph, v: v. memv v g /\ is_metadata v -> metadata_indegree v g <= indegree v g
+  
+  lemma metadata_outdegree_le_cardinale:
+    forall v: v, g: graph. is_metadata v /\ memv v g
+      -> 0 <= metadata_outdegree v g <= cardinale g
+
+  lemma metadata_outdegree_le_outdegree:
+    forall g: graph, v: v. memv v g /\ is_metadata v -> metadata_outdegree v g <= outdegree v g
+    
+  lemma snippet_metadata_outdegree_le_cardinale:
+    forall v: v, g: graph. is_snippet v /\ memv v g
+      -> 0 <= snippet_metadata_outdegree v g <= cardinale g
+  
   lemma snippet_metadata_indegree_le_cardinale:
-    forall v: v, g: graph. is_snippet v
+    forall v: v, g: graph. is_snippet v /\ memv v g
       -> 0 <= snippet_metadata_indegree v g <= cardinale g
 
-  lemma metadata_degree:
+  axiom metadata_degree: (* should be lemma *)
     forall g: graph, v: v. memv v g /\ is_metadata v
       -> degree v g = metadata_indegree v g + snippet_metadata_indegree v g + metadata_outdegree v g
 
-  axiom snippet_metadata_valid_relation:
-    forall g: graph, s: v. is_snippet s /\ memv s g
-      -> indegree s g = 0 /\ outdegree s g = snippet_metadata_outdegree s g >= 1
+  lemma not_metadata_to_snippet:
+    forall g: graph, e: e. meme e g -> (is_metadata (src e) -> not (is_snippet (dst e)))
 
-  axiom no_self_loops:
-    forall g: graph, e: e. src e <> dst e
-
-  lemma cardinal_self_loop_zero:  
+  axiom cardinal_self_loop_zero: (* should be lemma *)
     forall g: graph. cardinal_self_loop g = 0
 
-  lemma degree_sum3:
+  axiom degree_sum_msm: (* should be lemma *)
     forall g: graph, v: v. degree v g = indegree v g + outdegree v g
+
+  let function insert_freemetadata (m: v) (g: graph) : graph
+    requires  { is_metadata m }
+    requires  { not (memv m g) }
+    ensures   { result = insertv m g }
+  = insertv m g 
+
+  let function insert_metadata (m p: v) (g: graph) : graph
+    requires  { is_metadata m /\ is_metadata p }
+    requires  { not (memv m g) /\ memv p g } 
+    ensures   { result.vertices = Fset.add m g.vertices }
+    ensures   { result.edges = Fset.add (p,m) g.edges }
+  = let g_with_m = insert_freemetadata m g in
+    inserte (p,m) g_with_m 
+
+  lemma insert_metadata_cardinal_edges_vertices:
+    forall g1 g2: graph, m p: v. is_metadata m /\ is_metadata p /\ not (memv m g1) /\ memv p g1 /\ g2 = insert_metadata m p g1
+      -> cardinalv g2 = cardinalv g1 + 1 /\ cardinale g2 = cardinale g1 + 1
+
+  lemma insert_metadata_meme:
+    forall g1 g2: graph, m p: v. is_metadata m /\ is_metadata p /\ not (memv m g1) /\ memv p g1 /\ g2 = insert_metadata m p g1
+      -> meme (p,m) g2
 
 end
