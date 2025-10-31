@@ -3,30 +3,26 @@
 "https://www.why3.org/why3session.dtd">
 <why3session shape_version="6">
 <prover id="0" name="Z3" version="4.10.2" timelimit="1" steplimit="0" memlimit="1000"/>
-<prover id="1" name="CVC4" version="1.8" timelimit="1" steplimit="0" memlimit="4000"/>
-<prover id="2" name="Alt-Ergo" version="2.0.0" timelimit="1" steplimit="0" memlimit="4000"/>
-<file format="whyml">
+<prover id="1" name="CVC4" version="1.8" timelimit="1" steplimit="0" memlimit="1000"/>
+<prover id="2" name="Alt-Ergo" version="2.0.0" timelimit="1" steplimit="0" memlimit="1000"/>
+<file format="whyml" proved="true">
 <path name=".."/><path name="msm.mlw"/>
-<theory name="MSMDiGraph">
- <goal name="metadata_indegree_le_cardinale" proved="true">
- <proof prover="0"><result status="valid" time="0.018075" steps="83652"/></proof>
+<theory name="MSMDiGraph" proved="true">
+ <goal name="metadata_src_implies_dst" proved="true">
+ <proof prover="0"><result status="valid" time="0.013023" steps="78296"/></proof>
  </goal>
- <goal name="metadata_indegree_le_indegree">
- <proof prover="0" obsolete="true"><result status="timeout" time="1.070094"/></proof>
- <proof prover="1" memlimit="1000" obsolete="true"><result status="timeout" time="1.000000" steps="246801"/></proof>
- <proof prover="2" memlimit="1000" obsolete="true"><result status="timeout" time="1.000000"/></proof>
- <transf name="split_vc" >
-  <goal name="metadata_indegree_le_indegree.0">
+ <goal name="metadata_out_eq" proved="true">
+ <proof prover="0" obsolete="true"><result status="valid" time="0.024213" steps="97350"/></proof>
+ <transf name="split_vc" proved="true" >
+  <goal name="metadata_out_eq.0" proved="true">
   <proof prover="0" timelimit="5" memlimit="2000" obsolete="true"><result status="timeout" time="5.000000"/></proof>
-  <proof prover="1" timelimit="5" memlimit="2000" obsolete="true"><result status="timeout" time="5.000000" steps="2273441"/></proof>
+  <proof prover="1" timelimit="5" memlimit="2000" obsolete="true"><result status="timeout" time="5.000000" steps="3795277"/></proof>
   <proof prover="2" timelimit="5" memlimit="2000" obsolete="true"><result status="timeout" time="5.000000"/></proof>
-  <transf name="inline_goal" >
-   <goal name="metadata_indegree_le_indegree.0.0">
-   <transf name="split_all_full" >
-    <goal name="metadata_indegree_le_indegree.0.0.0">
-    <proof prover="0" timelimit="30" memlimit="4000"><result status="timeout" time="30.000000"/></proof>
-    <proof prover="1" timelimit="30"><result status="timeout" time="26.485531" steps="12956455"/></proof>
-    <proof prover="2" timelimit="30"><result status="timeout" time="30.000000"/></proof>
+  <transf name="inline_goal" proved="true" >
+   <goal name="metadata_out_eq.0.0" proved="true">
+   <transf name="split_all_full" proved="true" >
+    <goal name="metadata_out_eq.0.0.0" proved="true">
+    <proof prover="0"><result status="valid" time="0.027840" steps="151834"/></proof>
     </goal>
    </transf>
    </goal>
@@ -34,13 +30,16 @@
   </goal>
  </transf>
  </goal>
+ <goal name="metadata_indegree_le_cardinale" proved="true">
+ <proof prover="0"><result status="valid" time="0.025783" steps="96903"/></proof>
+ </goal>
  <goal name="metadata_outdegree_le_cardinale" proved="true">
- <proof prover="0"><result status="valid" time="0.019401" steps="84655"/></proof>
+ <proof prover="0"><result status="valid" time="0.016792" steps="86792"/></proof>
  </goal>
  <goal name="metadata_outdegree_le_outdegree" proved="true">
  <proof prover="0" obsolete="true"><result status="timeout" time="1.073992"/></proof>
- <proof prover="1" memlimit="1000" obsolete="true"><result status="timeout" time="1.000000" steps="455091"/></proof>
- <proof prover="2" memlimit="1000" obsolete="true"><result status="timeout" time="1.000000"/></proof>
+ <proof prover="1" obsolete="true"><result status="timeout" time="1.000000" steps="455091"/></proof>
+ <proof prover="2" obsolete="true"><result status="timeout" time="1.000000"/></proof>
  <transf name="split_vc" proved="true" >
   <goal name="metadata_outdegree_le_outdegree.0" proved="true">
   <proof prover="0" timelimit="5" memlimit="2000" obsolete="true"><result status="timeout" time="5.000000"/></proof>
@@ -50,7 +49,7 @@
    <goal name="metadata_outdegree_le_outdegree.0.0" proved="true">
    <transf name="split_all_full" proved="true" >
     <goal name="metadata_outdegree_le_outdegree.0.0.0" proved="true">
-    <proof prover="0"><result status="valid" time="0.021485" steps="93880"/></proof>
+    <proof prover="0"><result status="valid" time="0.018702" steps="96114"/></proof>
     </goal>
    </transf>
    </goal>
@@ -59,45 +58,41 @@
  </transf>
  </goal>
  <goal name="snippet_metadata_outdegree_le_cardinale" proved="true">
- <proof prover="0"><result status="valid" time="0.020766" steps="85651"/></proof>
+ <proof prover="0"><result status="valid" time="0.547490" steps="730327"/></proof>
  </goal>
- <goal name="snippet_metadata_indegree_le_cardinale">
+ <goal name="snippet_metadata_indegree_le_cardinale" proved="true">
  <proof prover="0" obsolete="true"><result status="timeout" time="1.045150"/></proof>
- <proof prover="1" memlimit="1000" obsolete="true"><result status="timeout" time="1.000000" steps="410512"/></proof>
- <proof prover="2" memlimit="1000" obsolete="true"><result status="timeout" time="1.000000"/></proof>
- <transf name="split_vc" >
-  <goal name="snippet_metadata_indegree_le_cardinale.0">
+ <proof prover="1" obsolete="true"><result status="timeout" time="1.000000" steps="410512"/></proof>
+ <proof prover="2" obsolete="true"><result status="timeout" time="1.000000"/></proof>
+ <transf name="split_vc" proved="true" >
+  <goal name="snippet_metadata_indegree_le_cardinale.0" proved="true">
   <proof prover="0" timelimit="5" memlimit="2000" obsolete="true"><result status="timeout" time="5.000000"/></proof>
   <proof prover="1" timelimit="5" memlimit="2000" obsolete="true"><result status="timeout" time="5.000000" steps="1742720"/></proof>
   <proof prover="2" timelimit="5" memlimit="2000" obsolete="true"><result status="unknown" time="0.017860" steps="3"/></proof>
-  <transf name="inline_goal" >
-   <goal name="snippet_metadata_indegree_le_cardinale.0.0">
-   <transf name="split_all_full" >
-    <goal name="snippet_metadata_indegree_le_cardinale.0.0.0">
-    <proof prover="0" timelimit="30" memlimit="4000"><result status="timeout" time="30.000000"/></proof>
-    <proof prover="1" timelimit="30"><result status="timeout" time="30.000000" steps="22087368"/></proof>
-    <proof prover="2" timelimit="30"><result status="unknown" time="0.018581" steps="4"/></proof>
+  <transf name="inline_goal" proved="true" >
+   <goal name="snippet_metadata_indegree_le_cardinale.0.0" proved="true">
+   <transf name="split_all_full" proved="true" >
+    <goal name="snippet_metadata_indegree_le_cardinale.0.0.0" proved="true">
+    <proof prover="1"><result status="valid" time="1.282033" steps="264382"/></proof>
     </goal>
    </transf>
    </goal>
   </transf>
   </goal>
-  <goal name="snippet_metadata_indegree_le_cardinale.1">
+  <goal name="snippet_metadata_indegree_le_cardinale.1" proved="true">
   <proof prover="0" timelimit="5" memlimit="2000" obsolete="true"><result status="timeout" time="5.000000"/></proof>
   <proof prover="1" timelimit="5" memlimit="2000" obsolete="true"><result status="timeout" time="5.000000" steps="1650936"/></proof>
   <proof prover="2" timelimit="5" memlimit="2000" obsolete="true"><result status="timeout" time="5.000000"/></proof>
-  <transf name="inline_goal" >
-   <goal name="snippet_metadata_indegree_le_cardinale.1.0">
-   <transf name="split_all_full" >
-    <goal name="snippet_metadata_indegree_le_cardinale.1.0.0">
+  <transf name="inline_goal" proved="true" >
+   <goal name="snippet_metadata_indegree_le_cardinale.1.0" proved="true">
+   <transf name="split_all_full" proved="true" >
+    <goal name="snippet_metadata_indegree_le_cardinale.1.0.0" proved="true">
     <proof prover="0" timelimit="5" memlimit="2000" obsolete="true"><result status="timeout" time="5.000000"/></proof>
     <proof prover="1" timelimit="5" memlimit="2000" obsolete="true"><result status="timeout" time="5.000000" steps="4355048"/></proof>
     <proof prover="2" timelimit="5" memlimit="2000" obsolete="true"><result status="timeout" time="5.000000"/></proof>
-    <transf name="inline_goal" >
-     <goal name="snippet_metadata_indegree_le_cardinale.1.0.0.0">
-     <proof prover="0" timelimit="30" memlimit="4000"><result status="timeout" time="30.000000"/></proof>
-     <proof prover="1" timelimit="30"><result status="timeout" time="30.000000" steps="21200761"/></proof>
-     <proof prover="2" timelimit="30"><result status="timeout" time="30.000000"/></proof>
+    <transf name="inline_goal" proved="true" >
+     <goal name="snippet_metadata_indegree_le_cardinale.1.0.0.0" proved="true">
+     <proof prover="1"><result status="valid" time="1.044396" steps="345400"/></proof>
      </goal>
     </transf>
     </goal>
@@ -107,44 +102,89 @@
   </goal>
  </transf>
  </goal>
- <goal name="metadata_degree">
- <proof prover="0" obsolete="true"><result status="timeout" time="1.033488"/></proof>
- <proof prover="1" memlimit="1000" obsolete="true"><result status="timeout" time="1.000000" steps="443200"/></proof>
- <proof prover="2" memlimit="1000" obsolete="true"><result status="timeout" time="1.000000"/></proof>
- <transf name="split_vc" >
-  <goal name="metadata_degree.0">
-  <proof prover="0" timelimit="30" memlimit="4000"><result status="timeout" time="30.000000"/></proof>
-  <proof prover="1" timelimit="30"><result status="timeout" time="30.000000" steps="8107869"/></proof>
-  <proof prover="2" timelimit="30"><result status="timeout" time="30.000000"/></proof>
-  </goal>
- </transf>
- </goal>
  <goal name="not_metadata_to_snippet" proved="true">
- <proof prover="0"><result status="valid" time="0.119059" steps="387632"/></proof>
+ <proof prover="0"><result status="valid" time="0.017899" steps="87779"/></proof>
  </goal>
- <goal name="cardinal_self_loop_zero">
- <proof prover="0" obsolete="true"><result status="timeout" time="1.076408"/></proof>
- <proof prover="1" memlimit="1000" obsolete="true"><result status="timeout" time="1.000000" steps="520435"/></proof>
- <proof prover="2" memlimit="1000" obsolete="true"><result status="unknown" time="0.031044" steps="2"/></proof>
- <transf name="split_vc" >
-  <goal name="cardinal_self_loop_zero.0">
-  <proof prover="0" timelimit="30" memlimit="4000"><result status="timeout" time="30.000000"/></proof>
-  <proof prover="1" timelimit="30"><result status="timeout" time="30.000000" steps="10214915"/></proof>
-  <proof prover="2" timelimit="30"><result status="unknown" time="0.021594" steps="2"/></proof>
+ <goal name="insert_freemetadata&#39;vc" expl="VC for insert_freemetadata" proved="true">
+ <proof prover="0"><result status="valid" time="0.017989" steps="89396"/></proof>
+ </goal>
+ <goal name="insert_metadata&#39;vc" expl="VC for insert_metadata" proved="true">
+ <proof prover="2"><result status="valid" time="0.222103" steps="380"/></proof>
+ </goal>
+ <goal name="insert_metadata_cardinal_edges_vertices" proved="true">
+ <proof prover="2"><result status="valid" time="0.064353" steps="226"/></proof>
+ </goal>
+ <goal name="insert_metadata_meme" proved="true">
+ <proof prover="0"><result status="valid" time="0.027131" steps="124579"/></proof>
+ </goal>
+ <goal name="insert_metadata_list_for_snippet&#39;vc" expl="VC for insert_metadata_list_for_snippet" proved="true">
+ <transf name="split_vc" proved="true" >
+  <goal name="insert_metadata_list_for_snippet&#39;vc.0" expl="precondition" proved="true">
+  <proof prover="2"><result status="valid" time="0.035301" steps="14"/></proof>
+  </goal>
+  <goal name="insert_metadata_list_for_snippet&#39;vc.1" expl="precondition" proved="true">
+  <proof prover="0" obsolete="true"><result status="timeout" time="1.000000"/></proof>
+  <proof prover="1" obsolete="true"><result status="timeout" time="1.000000" steps="143642"/></proof>
+  <proof prover="2" obsolete="true"><result status="timeout" time="1.000000"/></proof>
+  <transf name="split_vc" proved="true" >
+   <goal name="insert_metadata_list_for_snippet&#39;vc.1.0" expl="precondition" proved="true">
+   <proof prover="1" timelimit="5" memlimit="2000"><result status="valid" time="2.777485" steps="1149027"/></proof>
+   </goal>
+  </transf>
+  </goal>
+  <goal name="insert_metadata_list_for_snippet&#39;vc.2" expl="precondition" proved="true">
+  <proof prover="0"><result status="valid" time="0.021812" steps="8148"/></proof>
+  </goal>
+  <goal name="insert_metadata_list_for_snippet&#39;vc.3" expl="precondition" proved="true">
+  <proof prover="0"><result status="valid" time="0.044619" steps="113821"/></proof>
+  </goal>
+  <goal name="insert_metadata_list_for_snippet&#39;vc.4" expl="precondition" proved="true">
+  <proof prover="0"><result status="valid" time="0.049332" steps="127953"/></proof>
+  </goal>
+  <goal name="insert_metadata_list_for_snippet&#39;vc.5" expl="postcondition" proved="true">
+  <proof prover="0" obsolete="true"><result status="timeout" time="1.000000"/></proof>
+  <proof prover="1" obsolete="true"><result status="timeout" time="1.000000" steps="143616"/></proof>
+  <proof prover="2" obsolete="true"><result status="timeout" time="1.000000"/></proof>
+  <transf name="split_vc" proved="true" >
+   <goal name="insert_metadata_list_for_snippet&#39;vc.5.0" expl="postcondition" proved="true">
+   <proof prover="0"><result status="valid" time="0.019871" steps="113496"/></proof>
+   </goal>
+   <goal name="insert_metadata_list_for_snippet&#39;vc.5.1" expl="postcondition" proved="true">
+   <proof prover="0"><result status="valid" time="0.015766" steps="117755"/></proof>
+   </goal>
+  </transf>
+  </goal>
+  <goal name="insert_metadata_list_for_snippet&#39;vc.6" expl="postcondition" proved="true">
+  <proof prover="0" obsolete="true"><result status="timeout" time="0.794531"/></proof>
+  <proof prover="1" obsolete="true"><result status="timeout" time="1.000000" steps="148123"/></proof>
+  <proof prover="2" obsolete="true"><result status="timeout" time="1.000000"/></proof>
+  <transf name="split_vc" proved="true" >
+   <goal name="insert_metadata_list_for_snippet&#39;vc.6.0" expl="postcondition" proved="true">
+   <proof prover="0"><result status="valid" time="0.027808" steps="63479"/></proof>
+   </goal>
+   <goal name="insert_metadata_list_for_snippet&#39;vc.6.1" expl="postcondition" proved="true">
+   <proof prover="0"><result status="valid" time="0.017345" steps="146186"/></proof>
+   </goal>
+  </transf>
+  </goal>
+  <goal name="insert_metadata_list_for_snippet&#39;vc.7" expl="postcondition" proved="true">
+  <proof prover="0" obsolete="true"><result status="timeout" time="0.776209"/></proof>
+  <proof prover="1" obsolete="true"><result status="timeout" time="1.000000" steps="224520"/></proof>
+  <proof prover="2" obsolete="true"><result status="timeout" time="1.000000"/></proof>
+  <transf name="split_vc" proved="true" >
+   <goal name="insert_metadata_list_for_snippet&#39;vc.7.0" expl="postcondition" proved="true">
+   <proof prover="2"><result status="valid" time="0.034011" steps="17"/></proof>
+   </goal>
+   <goal name="insert_metadata_list_for_snippet&#39;vc.7.1" expl="postcondition" proved="true">
+   <proof prover="0"><result status="valid" time="0.041852" steps="129391"/></proof>
+   <proof prover="2" obsolete="true"><result status="valid" time="0.021494" steps="17"/></proof>
+   </goal>
+  </transf>
   </goal>
  </transf>
  </goal>
- <goal name="degree_sum3">
- <proof prover="0" obsolete="true"><result status="timeout" time="1.094156"/></proof>
- <proof prover="1" memlimit="1000" obsolete="true"><result status="timeout" time="1.000000" steps="412870"/></proof>
- <proof prover="2" memlimit="1000" obsolete="true"><result status="timeout" time="1.000000"/></proof>
- <transf name="split_vc" >
-  <goal name="degree_sum3.0">
-  <proof prover="0" timelimit="30" memlimit="4000"><result status="timeout" time="30.000000"/></proof>
-  <proof prover="1" timelimit="30"><result status="timeout" time="30.000000" steps="11787381"/></proof>
-  <proof prover="2" timelimit="30"><result status="timeout" time="30.000000"/></proof>
-  </goal>
- </transf>
+ <goal name="insert_snippet&#39;vc" expl="VC for insert_snippet" proved="true">
+ <proof prover="0"><result status="valid" time="0.075825" steps="290422"/></proof>
  </goal>
 </theory>
 </file>

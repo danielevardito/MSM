@@ -135,4 +135,28 @@ module MSMDiGraph
     forall g1 g2: graph, m p: v. is_metadata m /\ is_metadata p /\ not (memv m g1) /\ memv p g1 /\ g2 = insert_metadata m p g1
       -> meme (p,m) g2
 
+  let rec function insert_metadata_list_for_snippet (s: v) (metadata_list: list v) (g: graph) : graph
+    requires  { is_snippet s }
+    requires  { memv s g }
+    requires  { forall m: v. LM.mem m metadata_list -> is_metadata m /\ memv m g }
+    ensures   { result.vertices = g.vertices }
+    ensures   { forall e: e. meme e g -> meme e result }
+    ensures   { forall m: v. LM.mem m metadata_list -> meme (s,m) result }
+  = match metadata_list with
+    | Nil -> g
+    | Cons m l ->  
+        let g_sm_edge = inserte (s,m) g in
+        insert_metadata_list_for_snippet s l g_sm_edge
+    end
+
+  let function insert_snippet (s: v) (metadata_list: list v) (g: graph) : graph
+    requires  { is_snippet s }
+    requires  { not (memv s g)}
+    requires  { forall m: v. LM.mem m metadata_list -> is_metadata m /\ memv m g }
+    ensures   { result.vertices = Fset.add s g.vertices }
+    ensures   { forall e: e. meme e g -> meme e result }
+    ensures   { forall m: v. LM.mem m metadata_list -> meme (s,m) result }
+  = let g_s_inserted = insertv s g in
+    insert_metadata_list_for_snippet s metadata_list g
+
 end
