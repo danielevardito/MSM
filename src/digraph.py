@@ -95,14 +95,6 @@ class ValidatedArangoGraph:
             res.append((self._normalize_node_id(u), self._normalize_node_id(v)))
         return res
 
-    def edgesv_set(self, node_key: str) -> Set[Tuple[str, str]]:
-        """Get set of edges incident to vertex (as source or destination)."""
-        s: Set[Tuple[str, str]] = set()
-        for u, v in self.edges_list():
-            if u == node_key or v == node_key:
-                s.add((u, v))
-        return s
-
     def indegree(self, node_key: str) -> int:
         """Get in-degree of vertex."""
         if node_key not in self.G:
@@ -162,47 +154,11 @@ class ValidatedArangoGraph:
             return
         self.G.remove_edge(source_key, target_key)
 
-    def edges_srcv(self, node_key: str) -> Set[Tuple[str, str]]:
-        """Get edges with node_key as source."""
-        s: Set[Tuple[str, str]] = set()
-        for u, v in self.edges_list():
-            if u == node_key:
-                s.add((u, v))
-        return s
-
-    def successors(self, node_key: str) -> Set[str]:
-        """Get set of successor vertices."""
-        if node_key not in self.G:
-            logger.warning(f"Successors requested for non-existent node '{node_key}'.")
-            return set()
-        try:
-            succ_iter = self.G.successors(node_key)
-            return {self._normalize_node_id(n) for n in succ_iter}
-        except Exception:
-            return {self._normalize_node_id(v) for _, v in self.G.out_edges(node_key)}
-
-    def successors_list(self, node_key: str) -> List[str]:
+    def successors(self, node_key: str) -> List[str]:
         """Get list of successor vertices."""
         return list(self.successors(node_key))
 
-    def edges_dstv(self, node_key: str) -> Set[Tuple[str, str]]:
-        """Get edges with node_key as destination."""
-        s: Set[Tuple[str, str]] = set()
-        for u, v in self.edges_list():
-            if v == node_key:
-                s.add((u, v))
-        return s
-
-    def predecessors(self, node_key: str) -> Set[str]:
-        """Get set of predecessor vertices."""
-        if node_key not in self.G:
-            raise KeyError(f"Vertex '{node_key}' not found.")
-        try:
-            return {self._normalize_node_id(u) for u, _ in self.G.in_edges(node_key)}
-        except Exception:
-            return {self._normalize_node_id(n) for n in self.G.predecessors(node_key)}
-
-    def predecessors_list(self, node_key: str) -> List[str]:
+    def predecessors(self, node_key: str) -> List[str]:
         """Get list of predecessor vertices."""
         return list(self.predecessors(node_key))
 

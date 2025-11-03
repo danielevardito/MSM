@@ -159,4 +159,10 @@ module MSMDiGraph
   = let g_s_inserted = insertv s g in
     insert_metadata_list_for_snippet s metadata_list g
 
+  lemma insert_snippet_cardinal_edges:
+    forall g: graph, s: v, metadata_list: list v. 
+      is_snippet s /\ not (memv s g) /\ (forall m: v. LM.mem m metadata_list -> is_metadata m /\ memv m g) ->
+        let g_inserted = insert_snippet s metadata_list g in
+          cardinale g_inserted = cardinale g + length metadata_list
+
 end

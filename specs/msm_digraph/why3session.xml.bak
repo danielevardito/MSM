@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE why3session PUBLIC "-//Why3//proof session v5//EN"
+"https://www.why3.org/why3session.dtd">
+<why3session shape_version="6">
+<prover id="0" name="CVC4" version="1.8" timelimit="1" steplimit="0" memlimit="1000"/>
+<prover id="1" name="Alt-Ergo" version="2.0.0" timelimit="1" steplimit="0" memlimit="1000"/>
+<prover id="2" name="Z3" version="4.10.2" timelimit="1" steplimit="0" memlimit="1000"/>
+<file format="whyml" proved="true">
+<path name=".."/><path name="msm_digraph.mlw"/>
+<theory name="MSMDiGraph" proved="true">
+ <goal name="metadata_src_implies_dst" proved="true">
+ <proof prover="2"><result status="valid" time="0.019755" steps="78296"/></proof>
+ </goal>
+ <goal name="metadata_out_eq" proved="true">
+ <proof prover="2"><result status="valid" time="0.023667" steps="97789"/></proof>
+ </goal>
+ <goal name="metadata_indegree_le_cardinale" proved="true">
+ <proof prover="2"><result status="valid" time="0.024186" steps="96903"/></proof>
+ </goal>
+ <goal name="metadata_outdegree_le_cardinale" proved="true">
+ <proof prover="2"><result status="valid" time="0.020515" steps="86792"/></proof>
+ </goal>
+ <goal name="metadata_outdegree_le_outdegree" proved="true">
+ <proof prover="2"><result status="valid" time="0.023965" steps="86327"/></proof>
+ </goal>
+ <goal name="snippet_metadata_outdegree_le_cardinale" proved="true">
+ <proof prover="2"><result status="valid" time="0.284343" steps="730327"/></proof>
+ </goal>
+ <goal name="snippet_metadata_indegree_le_cardinale" proved="true">
+ <proof prover="0"><result status="timeout" time="1.000000" steps="329620"/></proof>
+ <proof prover="1"><result status="timeout" time="1.000000"/></proof>
+ <proof prover="2"><result status="timeout" time="1.000000"/></proof>
+ <transf name="split_vc" proved="true" >
+  <goal name="snippet_metadata_indegree_le_cardinale.0" proved="true">
+  <proof prover="0" timelimit="5" memlimit="2000"><result status="valid" time="1.334159" steps="338840"/></proof>
+  </goal>
+  <goal name="snippet_metadata_indegree_le_cardinale.1" proved="true">
+  <proof prover="0" timelimit="5" memlimit="2000"><result status="valid" time="1.255749" steps="339566"/></proof>
+  </goal>
+ </transf>
+ </goal>
+ <goal name="not_metadata_to_snippet" proved="true">
+ <proof prover="2"><result status="valid" time="0.021809" steps="87779"/></proof>
+ </goal>
+ <goal name="insert_freemetadata&#39;vc" expl="VC for insert_freemetadata" proved="true">
+ <proof prover="2"><result status="valid" time="0.021036" steps="89396"/></proof>
+ </goal>
+ <goal name="insert_metadata&#39;vc" expl="VC for insert_metadata" proved="true">
+ <proof prover="1"><result status="valid" time="0.117215" steps="380"/></proof>
+ </goal>
+ <goal name="insert_metadata_cardinal_edges_vertices" proved="true">
+ <proof prover="1"><result status="valid" time="0.077811" steps="226"/></proof>
+ </goal>
+ <goal name="insert_metadata_meme" proved="true">
+ <proof prover="2"><result status="valid" time="0.032035" steps="124579"/></proof>
+ </goal>
+ <goal name="insert_metadata_list_for_snippet&#39;vc" expl="VC for insert_metadata_list_for_snippet" proved="true">
+ <proof prover="0"><result status="timeout" time="1.000000" steps="253539"/></proof>
+ <proof prover="1"><result status="timeout" time="1.000000"/></proof>
+ <proof prover="2"><result status="timeout" time="1.000000"/></proof>
+ <transf name="split_vc" proved="true" >
+  <goal name="insert_metadata_list_for_snippet&#39;vc.0" expl="precondition" proved="true">
+  <proof prover="1"><result status="valid" time="0.024000" steps="14"/></proof>
+  </goal>
+  <goal name="insert_metadata_list_for_snippet&#39;vc.1" expl="precondition" proved="true">
+  <proof prover="0"><result status="timeout" time="1.000000" steps="320430"/></proof>
+  <proof prover="1"><result status="timeout" time="1.000000"/></proof>
+  <proof prover="2"><result status="timeout" time="1.000000"/></proof>
+  <transf name="split_vc" proved="true" >
+   <goal name="insert_metadata_list_for_snippet&#39;vc.1.0" expl="precondition" proved="true">
+   <proof prover="0" timelimit="5" memlimit="2000"><result status="valid" time="3.162201" steps="1149027"/></proof>
+   </goal>
+  </transf>
+  </goal>
+  <goal name="insert_metadata_list_for_snippet&#39;vc.2" expl="precondition" proved="true">
+  <proof prover="2"><result status="valid" time="0.009950" steps="8148"/></proof>
+  </goal>
+  <goal name="insert_metadata_list_for_snippet&#39;vc.3" expl="precondition" proved="true">
+  <proof prover="2"><result status="valid" time="0.025926" steps="113821"/></proof>
+  </goal>
+  <goal name="insert_metadata_list_for_snippet&#39;vc.4" expl="precondition" proved="true">
+  <proof prover="2"><result status="valid" time="0.034067" steps="127953"/></proof>
+  </goal>
+  <goal name="insert_metadata_list_for_snippet&#39;vc.5" expl="postcondition" proved="true">
+  <proof prover="0"><result status="timeout" time="1.000000" steps="342236"/></proof>
+  <proof prover="1"><result status="timeout" time="1.000000"/></proof>
+  <proof prover="2"><result status="timeout" time="1.000000"/></proof>
+  <transf name="split_vc" proved="true" >
+   <goal name="insert_metadata_list_for_snippet&#39;vc.5.0" expl="postcondition" proved="true">
+   <proof prover="2"><result status="valid" time="0.025212" steps="113496"/></proof>
+   </goal>
+   <goal name="insert_metadata_list_for_snippet&#39;vc.5.1" expl="postcondition" proved="true">
+   <proof prover="2"><result status="valid" time="0.027552" steps="117755"/></proof>
+   </goal>
+  </transf>
+  </goal>
+  <goal name="insert_metadata_list_for_snippet&#39;vc.6" expl="postcondition" proved="true">
+  <proof prover="0"><result status="timeout" time="1.000000" steps="249638"/></proof>
+  <proof prover="1"><result status="timeout" time="1.000000"/></proof>
+  <proof prover="2"><result status="timeout" time="1.000000"/></proof>
+  <transf name="split_vc" proved="true" >
+   <goal name="insert_metadata_list_for_snippet&#39;vc.6.0" expl="postcondition" proved="true">
+   <proof prover="2"><result status="valid" time="0.018049" steps="63479"/></proof>
+   </goal>
+   <goal name="insert_metadata_list_for_snippet&#39;vc.6.1" expl="postcondition" proved="true">
+   <proof prover="2"><result status="valid" time="0.031946" steps="146186"/></proof>
+   </goal>
+  </transf>
+  </goal>
+  <goal name="insert_metadata_list_for_snippet&#39;vc.7" expl="postcondition" proved="true">
+  <proof prover="0"><result status="timeout" time="1.000000" steps="258123"/></proof>
+  <proof prover="1"><result status="timeout" time="1.000000"/></proof>
+  <proof prover="2"><result status="timeout" time="1.000000"/></proof>
+  <transf name="split_vc" proved="true" >
+   <goal name="insert_metadata_list_for_snippet&#39;vc.7.0" expl="postcondition" proved="true">
+   <proof prover="1"><result status="valid" time="0.017515" steps="17"/></proof>
+   </goal>
+   <goal name="insert_metadata_list_for_snippet&#39;vc.7.1" expl="postcondition" proved="true">
+   <proof prover="2"><result status="valid" time="0.029253" steps="129391"/></proof>
+   </goal>
+  </transf>
+  </goal>
+ </transf>
+ </goal>
+ <goal name="insert_snippet&#39;vc" expl="VC for insert_snippet" proved="true">
+ <proof prover="2"><result status="valid" time="0.148843" steps="392192"/></proof>
+ </goal>
+ <goal name="insert_snippet_cardinal_edges" proved="true">
+ <proof prover="0"><result status="valid" time="0.105123" steps="33273"/></proof>
+ </goal>
+</theory>
+</file>
+</why3session>
