@@ -1,20 +1,9 @@
 import nx_arangodb as nxadb
 from pydantic import BaseModel
 from enum import Enum
-from typing import TypeVar, Dict, Any, Optional, Tuple, Type, List, Set, Any as AnyType
-import os
-import logging
-
-logger = logging.getLogger(__name__)
-if not logger.handlers:
-    handler = logging.StreamHandler()
-    formatter = logging.Formatter("%(levelname)s: %(message)s")
-    handler.setFormatter(formatter)
-    logger.addHandler(handler)
-logger.setLevel(logging.INFO)
+from typing import TypeVar, Dict, Any, Optional, Tuple, Type, List, Any as AnyType
 
 M = TypeVar("M", bound=BaseModel)
-
 
 class ValidatedArangoGraph:
     """Wrapper for managing directed graphs conforming to Why3 DiGraph theory."""
@@ -29,7 +18,6 @@ class ValidatedArangoGraph:
 
         self.G: nxadb.Graph = adb_graph
         self.relation_enum: Type[Enum] = relation_enum
-        logger.info(f"ValidatedArangoGraph initialized for graph '{adb_graph.name}'.")
 
     def _normalize_node_id(self, node_id: AnyType) -> str:
         """Extract key from 'collection/key' or return stringified value."""
@@ -117,20 +105,22 @@ class ValidatedArangoGraph:
         """Get list of edges incident to vertex."""
         return list(self.edgesv_set(node_key))
 
-    def insertv(self, node_key: str, node_data: Dict[str, Any] = None) -> str:
+    def insertv(self, node_data: Dict[str, Any], node_key: str, key_field: str) -> str:
         """Insert a vertex into the graph."""
         if node_key in self.G:
             raise KeyError(f"Vertex with key '{node_key}' already exists.")
         
         data = node_data if node_data is not None else {}
+        if key_field and key_field in data:
+            data.pop(key_field)
+
         self.G.add_node(node_key, **data)
         return node_key
 
     def deletev(self, node_key: str):
         """Delete vertex and all its incident edges from graph."""
         if node_key not in self.G:
-            logger.warning(f"Attempted to delete non-existent node '{node_key}'.")
-            return
+            raise KeyError("Node key is not in G")
         self.G.remove_node(node_key)
 
     def inserte(self, source_key: str, target_key: str, relation_type: Enum) -> Tuple[str, str]:
@@ -150,8 +140,7 @@ class ValidatedArangoGraph:
     def deletee(self, source_key: str, target_key: str):
         """Delete edge from graph."""
         if not self.G.has_edge(source_key, target_key):
-            logger.warning(f"Attempted to delete non-existent edge ('{source_key}' -> '{target_key}').")
-            return
+            raise KeyError(f"Attempted to delete non-existent edge ('{source_key}' -> '{target_key}').")
         self.G.remove_edge(source_key, target_key)
 
     def successors(self, node_key: str) -> List[str]:
