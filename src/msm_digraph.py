@@ -27,15 +27,17 @@ class Snippet(BaseModel):
     @field_validator('extension', mode='before')
     @classmethod
     def force_extension_lowercase(cls, v: str) -> str:
-        """Forza l'estensione in minuscolo prima di validarla"""
+        """Force extension to lowercase before validation"""
         if isinstance(v, str):
             return v.lower()
         return v
 
     @model_validator(mode='after')
     def ensure_name_has_correct_extension(self) -> 'Snippet':
+        """Ensure name has the correct extension"""
         base_name, _ = os.path.splitext(self.name)
-        return f"{base_name}.{self.extension}"
+        self.name = f"{base_name}.{self.extension}"
+        return self
 
 class MSMDiGraph(ValidatedArangoGraph):
     """The specific graph to use as database."""
@@ -55,7 +57,7 @@ class MSMDiGraph(ValidatedArangoGraph):
             name, category = data_string.split("-", 1)
         except ValueError:
             raise ValueError(
-                f"String not valid: {data_string}"
+                f"String not valid: {data_string}. "
                 f"Requested format: name-category"
             )
 
@@ -63,7 +65,7 @@ class MSMDiGraph(ValidatedArangoGraph):
         return metadata
             
     def _format_metdata(self, metadata: Metadata) -> str:
-        return f"{metadata.name}-{metadata.category}"
+        return f"{metadata.name}-{metadata.category.value}"
 
     def is_metadata(self, node_key: str) -> bool:
         if not self.memv(node_key):
@@ -79,7 +81,7 @@ class MSMDiGraph(ValidatedArangoGraph):
             return False
 
         try:
-            Snippet.parse_obj(self._node_data_with_key("name", node_key))
+            Snippet.model_validate(self._node_data_with_key("name", node_key))
             return True
         except ValidationError:
             return False
@@ -93,7 +95,10 @@ class MSMDiGraph(ValidatedArangoGraph):
 
         if self.memv(key):
             raise KeyError("Metadata already exists")
-        self.insertv(metadata, key)
+        
+        # Convert metadata to dict for storage
+        data = metadata.model_dump()
+        self.insertv(data, key, "name")
         return key
 
     def insert_metadata(self, metadata: Metadata, parent: Metadata, category: Category) -> str:
@@ -113,39 +118,43 @@ class MSMDiGraph(ValidatedArangoGraph):
         if self.memv(new_metadata_key):
             raise ValueError("Metadata already exists")
 
-        self.insertv(metadata, new_metadata_key, None)
+        data = metadata.model_dump()
+        self.insertv(data, new_metadata_key, "name")
         self.inserte(parent_key, new_metadata_key, RelationType.METADATA_PARENT)
+        return new_metadata_key
 
-    def metadata_present_same_cat(self, metadata_list: List[str], category: Category):
+    def _metadata_present_same_cat(self, metadata_list: List[Metadata], category: Category):
         match metadata_list:
-            case []: return 
+            case []: 
+                return 
             case [m, *l]:
-                if not self.is_metadata(m):
+                if not self.is_metadata(self._format_metdata(m)):
                     raise ValueError(f"Metadata {m} isn't in db")
-                if self._parse_metadata(m).category != category:
-                    raise ValueError(f"Metdata category: {m} doesn't match requested category:{category}")
-                self.metadata_present_same_cat(l, category)
+                if m.category != category:
+                    raise ValueError(f"Metadata category: {m} doesn't match requested category:{category}")
+                self._metadata_present_same_cat(l, category)
                 
 
-    def insert_metadata_list_for_snippet(self, snippet_key: str, metadata_list: List[str], category: Category):
+    def _insert_metadata_list_for_snippet(self, snippet_key: str, metadata_list: List[Metadata], category: Category):
         if not self.is_snippet(snippet_key): # precondition
             raise ValueError(f"Snippet {snippet_key} isn't in db")
 
-        self.metadata_present_same_cat(metadata_list, category) # precondition + category control
+        self._metadata_present_same_cat(metadata_list, category) # precondition + category control
 
         match metadata_list:
-            case []: return
+            case []: 
+                return
             case [m, *l]:
-                self.inserte(snippet_key, m, RelationType.HAS_METADATA)
-                self.insert_metadata_list_for_snippet(snippet_key, l)
+                self.inserte(snippet_key, self._format_metdata(m), RelationType.HAS_METADATA)
+                self._insert_metadata_list_for_snippet(snippet_key, l, category)
 
-    def insert_snippet(self, snippet: Snippet, metadata_list: List[str], category: Category):
+    def insert_snippet(self, snippet: Snippet, metadata_list: List[Metadata], category: Category):
         if self.memv(snippet.name): # precondition
             raise ValueError(f"Snippet {snippet.name} already exists")
+        if len(metadata_list) < 1:
+            raise ValueError("There should be at least one metadata name")
         
-        self.insertv(snippet, snippet.name, "name")
-        self.insert_metadata_list_for_snippet(snippet.name, metadata_list, category)
-         
-
-
+        data = snippet.model_dump()
+        self.insertv(data, snippet.name, "name")
+        self._insert_metadata_list_for_snippet(snippet.name, metadata_list, category)
         
