@@ -96,7 +96,11 @@ class MSMDiGraph(ValidatedArangoGraph):
         self.insertv(metadata, key)
         return key
 
-    def insert_metadata(self, metadata: Metadata, parent: Metadata) -> str:
+    def insert_metadata(self, metadata: Metadata, parent: Metadata, category: Category) -> str:
+
+        if metadata.category != category or parent.category != category:
+            raise ValueError(f"Category mismatch: child:{metadata.category}, parent:{parent.category} category to insert:{category}")
+
         new_metadata_key = self._format_metdata(metadata)
         parent_key = self._format_metdata(parent)
 
@@ -112,26 +116,36 @@ class MSMDiGraph(ValidatedArangoGraph):
         self.insertv(metadata, new_metadata_key, None)
         self.inserte(parent_key, new_metadata_key, RelationType.METADATA_PARENT)
 
-    def insert_metadata_list_for_snippet(self, snippet_key: str, metadata_list: List[str]):
-        if not self.is_snippet(snippet_key):
+    def metadata_present_same_cat(self, metadata_list: List[str], category: Category):
+        match metadata_list:
+            case []: return 
+            case [m, *l]:
+                if not self.is_metadata(m):
+                    raise ValueError(f"Metadata {m} isn't in db")
+                if self._parse_metadata(m).category != category:
+                    raise ValueError(f"Metdata category: {m} doesn't match requested category:{category}")
+                self.metadata_present_same_cat(l, category)
+                
+
+    def insert_metadata_list_for_snippet(self, snippet_key: str, metadata_list: List[str], category: Category):
+        if not self.is_snippet(snippet_key): # precondition
             raise ValueError(f"Snippet {snippet_key} isn't in db")
+
+        self.metadata_present_same_cat(metadata_list, category) # precondition + category control
 
         match metadata_list:
             case []: return
             case [m, *l]:
-                if not self.is_metadata(m): # Precondition in why3 (forall m)
-                    raise ValueError(f"Metadata {metadata_list} isn't in db")
                 self.inserte(snippet_key, m, RelationType.HAS_METADATA)
                 self.insert_metadata_list_for_snippet(snippet_key, l)
 
-    def insert_snippet(self, snippet: Snippet, metadata_list: List[str]):
-        if self.memv(snippet.name):
+    def insert_snippet(self, snippet: Snippet, metadata_list: List[str], category: Category):
+        if self.memv(snippet.name): # precondition
             raise ValueError(f"Snippet {snippet.name} already exists")
         
         self.insertv(snippet, snippet.name, "name")
-        self.insert_metadata_list_for_snippet(snippet.name, metadata_list)
+        self.insert_metadata_list_for_snippet(snippet.name, metadata_list, category)
          
-    # TODO: categoria in insert_snippet
 
 
         
