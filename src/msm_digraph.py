@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field, ValidationError, field_validator, model_validator
 from enum import Enum
-from typing import List
+from typing import List, Tuple
 from datetime import datetime
 from digraph import ValidatedArangoGraph
 import os
@@ -98,7 +98,7 @@ class MSMDiGraph(ValidatedArangoGraph):
         
         # Convert metadata to dict for storage
         data = metadata.model_dump()
-        self.insertv(data, key, "name")
+        self.insertv(data, key)
         return key
 
     def insert_metadata(self, metadata: Metadata, parent: Metadata, category: Category) -> str:
@@ -119,7 +119,7 @@ class MSMDiGraph(ValidatedArangoGraph):
             raise ValueError("Metadata already exists")
 
         data = metadata.model_dump()
-        self.insertv(data, new_metadata_key, "name")
+        self.insertv(data, new_metadata_key)
         self.inserte(parent_key, new_metadata_key, RelationType.METADATA_PARENT)
         return new_metadata_key
 
@@ -154,7 +154,19 @@ class MSMDiGraph(ValidatedArangoGraph):
         if len(metadata_list) < 1:
             raise ValueError("There should be at least one metadata name")
         
-        data = snippet.model_dump()
-        self.insertv(data, snippet.name, "name")
+        data = snippet.model_dump(mode='json')
+        self.insertv(data, snippet.name)
         self._insert_metadata_list_for_snippet(snippet.name, metadata_list, category)
-        
+
+    def _get_all_metadata_from_snippet(self, snippet_name: str) -> List[Metadata]:
+        metadata_keys = self.successors(snippet_name)
+        return [self._parse_metadata(key) for key in metadata_keys]
+
+    def get_snippet(self, snippet_name: str) -> Tuple[Snippet, List[Metadata]]:
+        if not self.is_snippet(snippet_name):
+            raise ValueError(f"Snippet {snippet_name} does not exist")
+
+        snippet = self.get_node(snippet_name)
+        snippet_obj = Snippet.model_validate(snippet)
+        metadata_list = self._get_all_metadata_from_snippet(snippet_name)
+        return snippet_obj, metadata_list

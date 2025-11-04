@@ -121,6 +121,32 @@ def _handle_add_snippet(graph: MSMDiGraph):
     except (ValidationError, KeyError, ValueError) as e:
         print(f"\nError during creation: {e}")
         print("Make sure you inserted at least one metadata and all metadata inserted already exist.")
+
+def _handle_get_snippet(graph: MSMDiGraph):
+    print("\n--- 4. Get Snippet ---")
+    try:
+        name = input("Snippet name (e.g., my_code.py): ").strip()
+        if not name:
+            print("Operation cancelled. Name can't be empty.")
+            return
+
+        snippet, metadata_list = graph.get_snippet(name)
+
+        print("\n--- Snippet Found ---")
+        print(f"  Name: {snippet.name}")
+        print(f"  Content: {snippet.content}")
+        print(f"  Extension: {snippet.extension}")
+        print(f"  Created At: {snippet.created_at}")
+        
+        print("\n  Linked Metadata:")
+        if not metadata_list:
+            print("    (None)")
+        else:
+            for meta in metadata_list:
+                print(f"    - {meta.name} ({meta.category.value})")
+
+    except (KeyError, ValueError, ValidationError) as e:
+        print(f"\nError retrieving snippet: {e}")
         
 def print_menu():
    """Print menu"""
@@ -129,7 +155,8 @@ def print_menu():
    print("  1. Add a free metadata")
    print("  2. Add a metadata with existing parent")
    print("  3. Add a snippet")
-   print("  4. Exit")
+   print("  4. Get a snippet")
+   print("  5. Exit")
 
 def main_loop():
  adb_graph = setup_database_connection()
@@ -137,7 +164,7 @@ def main_loop():
 
  while True:
     print_menu()
-    choice = input("Choice (1-4): ").strip()
+    choice = input("Choice (1-5").strip()
 
     if choice == '1':
        _handle_add_free_metadata(msm_graph)
@@ -146,6 +173,8 @@ def main_loop():
     elif choice == '3':
        _handle_add_snippet(msm_graph)
     elif choice == '4':
+       _handle_get_snippet(msm_graph)
+    elif choice == '5':
        print("Bye")
        break
     else: 

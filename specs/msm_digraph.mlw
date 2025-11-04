@@ -165,4 +165,9 @@ module MSMDiGraph
         let g_inserted = insert_snippet s metadata_list g in
           cardinale g_inserted = cardinale g + length metadata_list
 
+  let function get_all_metadata_from_snippet (s: v) (g: graph) : list v
+    requires  { is_snippet s /\ memv s g }
+    ensures   { forall m: v. LM.mem m result /\ is_metadata m <-> meme (s,m) g }
+  = successors_list s g
+
 end

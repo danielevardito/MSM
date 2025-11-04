@@ -105,14 +105,12 @@ class ValidatedArangoGraph:
         """Get list of edges incident to vertex."""
         return list(self.edgesv_set(node_key))
 
-    def insertv(self, node_data: Dict[str, Any], node_key: str, key_field: str) -> str:
+    def insertv(self, node_data: Dict[str, Any], node_key: str) -> str:
         """Insert a vertex into the graph."""
         if node_key in self.G:
             raise KeyError(f"Vertex with key '{node_key}' already exists.")
         
         data = node_data if node_data is not None else {}
-        if key_field and key_field in data:
-            data.pop(key_field)
 
         self.G.add_node(node_key, **data)
         return node_key
@@ -145,14 +143,17 @@ class ValidatedArangoGraph:
 
     def successors(self, node_key: str) -> List[str]:
         """Get list of successor vertices."""
-        return list(self.successors(node_key))
+        return [self._normalize_node_id(n) for n in self.G.successors(node_key)] 
 
     def predecessors(self, node_key: str) -> List[str]:
         """Get list of predecessor vertices."""
-        return list(self.predecessors(node_key))
+        return [self._normalize_node_id(n) for n in self.G.predecessors(node_key)] 
 
     def getelabel(self, source_key: str, target_key: str) -> Optional[str]:
         """Get edge label (relation type) - utility function for Python."""
         if self.G.has_edge(source_key, target_key):
             return self.G.edges[(source_key, target_key)].get('label')
         return None
+
+    def get_node(self, key: str) -> Dict[str, Any]:
+        return self.G.nodes[key]

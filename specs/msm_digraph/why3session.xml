@@ -128,6 +128,9 @@
  <goal name="insert_snippet_cardinal_edges" proved="true">
  <proof prover="0"><result status="valid" time="0.105123" steps="33273"/></proof>
  </goal>
+ <goal name="get_all_metadata_from_snippet&#39;vc" expl="VC for get_all_metadata_from_snippet" proved="true">
+ <proof prover="2"><result status="valid" time="0.748306" steps="1108571"/></proof>
+ </goal>
 </theory>
 </file>
 </why3session>
