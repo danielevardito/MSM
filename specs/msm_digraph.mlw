@@ -200,11 +200,35 @@ module MSMDiGraph
     let all_snippets_with_metadata = get_snippets_with_metadata_from_list all_snippets g in
     all_snippets_with_metadata
 
-  val function get_all_snippet_from_metadata (m: v) (g: graph) : list v
+  let function get_snippets_from_metadata (m: v) (g: graph) : fset v
+    requires  { is_metadata m }
+    ensures   { forall s: v. mem s result <-> memv s g /\ is_snippet s /\ meme (s,m) g }
+  = let pred = predecessors_list m g in
+    list_to_fset (filter_snippets_from_vertices pred)
 
-  val function get_snippet_from_exact_metadata (metadata_list: list v) (g: graph) : list v
-    requires  { forall m: v. LM.mem m metadata_list -> is_metadata m /\ memv m g }
-    ensures   { forall s: v. LM.mem s result -> is_snippet s /\ memv s g }
-    ensures   { forall s m: v. LM.mem s result -> LM.mem m (get_all_metadata_from_snippet s g) }
+  let rec ghost function get_snippets_union (metadata_list: list v) (g: graph) : fset v 
+    requires  { forall m: v. LM.mem m metadata_list -> is_metadata m }
+    ensures   { forall m: v. LM.mem m metadata_list -> Fset.subset (get_snippets_from_metadata m g) result }
+  = match metadata_list with
+    | Nil -> Fset.empty 
+    | Cons m r -> Fset.union (get_snippets_from_metadata m g) (get_snippets_union r g)
+    end
+  
+  let ghost function get_snippets_union_list (metadata_list: list v) (g: graph) : list v
+    requires  { forall m: v. LM.mem m metadata_list -> is_metadata m }
+  = fset_to_list (get_snippets_union metadata_list g)
+
+  let rec ghost function get_snippets_intersection (metadata_list: list v) (g: graph) : fset v
+    requires  { forall m: v. LM.mem m metadata_list -> is_metadata m }
+    ensures   { forall m: v. LM.mem m metadata_list -> Fset.subset result (get_snippets_from_metadata m g) }
+  = match metadata_list with
+    | Nil -> Fset.empty
+    | Cons m Nil -> get_snippets_from_metadata m g
+    | Cons m r -> Fset.inter (get_snippets_from_metadata m g) (get_snippets_intersection r g)
+    end
+
+  let ghost function get_snippets_intersection_list (metadata_list: list v) (g: graph) : list v
+    requires  { forall m: v. LM.mem m metadata_list -> is_metadata m }
+  = fset_to_list (get_snippets_intersection metadata_list g)
 
 end

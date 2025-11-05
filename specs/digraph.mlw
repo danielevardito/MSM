@@ -84,6 +84,10 @@ theory DiGraph
     ensures { forall x: 'a. LM.mem x result <-> Fset.mem x s }
     ensures { cardinal s = length result }
 
+  val function list_to_fset (l: list 'a): fset 'a
+    ensures { forall x: 'a. Fset.mem x result <-> LM.mem x l }
+    ensures { length l = cardinal result }
+
   val function edgesv_list (v: v) (g: graph) : list e
     ensures { result = fset_to_list (edgesv_set v g)}
 

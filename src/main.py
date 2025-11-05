@@ -157,6 +157,70 @@ def _prompt_category() -> Category:
         except ValueError:
             print_error(f"'{cat_str}' is not a valid category. Try again")
 
+def _prompt_metadata_list(category: Category) -> list[Metadata]:
+    """Prompt user to enter a list of metadata names and return Metadata objects"""
+    metadata_names_str = input_prompt("List metadata names (comma-separated, e.g., algorithm, list)")
+    metadata_names_list = [n.strip() for n in metadata_names_str.split(",") if n.strip()]
+
+    if not metadata_names_list:
+        raise ValueError("At least one metadata name is required.")
+
+    return [Metadata(name=n, category=category) for n in metadata_names_list]
+
+def _display_snippets_summary(snippets_list: list[tuple[Snippet, list[Metadata]]]):
+    """Display a summary of snippets with their metadata"""
+    if not snippets_list:
+        print_warning("No snippets found.")
+        return False
+    
+    print(f"{Colors.BOLD}Found {len(snippets_list)} snippet(s):{Colors.RESET}\n")
+    
+    for i, (snippet, metadata_list) in enumerate(snippets_list, 1):
+        category = metadata_list[0].category.value if metadata_list else "N/A"
+        
+        print(f"{Colors.YELLOW}{i}.{Colors.RESET} {Colors.BOLD}{snippet.name}{Colors.RESET}")
+        print(f"   {Colors.CYAN}Created:{Colors.RESET}    {snippet.created_at}")
+        print(f"   {Colors.CYAN}Category:{Colors.RESET}   {category}")
+        print(f"   {Colors.CYAN}Metadata:{Colors.RESET}   ", end="")
+        
+        if not metadata_list:
+            print(f"{Colors.DIM}(None){Colors.RESET}")
+        else:
+            metadata_names = ", ".join([m.name for m in metadata_list])
+            print(metadata_names)
+        print()
+    
+    return True
+
+def _interact_with_snippet_list(graph: MSMDiGraph):
+    """Allow user to view/edit snippets from the list"""
+    while True:
+        view_choice = input_prompt("Enter snippet name to view, or 'n' to return to menu", Colors.GREEN).strip()
+        
+        if view_choice.lower() in ['n', 'no']:
+            return
+        
+        if view_choice:
+            try:
+                snippet, metadata_list = graph.get_snippet(view_choice)
+                
+                print(f"\n{Colors.BOLD}{Colors.GREEN}Snippet: {snippet.name}{Colors.RESET}")
+                open_snippet_in_vim_and_update(graph, snippet)
+                print()
+            except (KeyError, ValueError, ValidationError) as e:
+                print_error(f"Error retrieving snippet '{view_choice}': {e}\n")
+
+def _display_and_interact_with_snippets(
+    graph: MSMDiGraph, 
+    snippets_list: list[tuple[Snippet, list[Metadata]]], 
+    title: str
+):
+    """Display snippets and allow user to interact with them"""
+    print_header(title)
+    
+    if _display_snippets_summary(snippets_list):
+        _interact_with_snippet_list(graph)
+
 def _handle_add_free_metadata(graph: MSMDiGraph):
     """Add metadata without parent"""
     print_header("Add Metadata (without parent)")
@@ -224,14 +288,13 @@ def _handle_add_snippet(graph: MSMDiGraph):
         snippet_obj = Snippet(name=name, content=content, extension=extension)
 
         print(f"\n{Colors.BOLD}Now insert metadata to link{Colors.RESET} {Colors.DIM}(must already exist){Colors.RESET}")
-        metadata_names_str = input_prompt("List metadata names (comma-separated, e.g., algorithm, list)")
-        metadata_names_list = [n.strip() for n in metadata_names_str.split(",") if n.strip()]
-
-        if not metadata_names_list:
-            print_warning("Operation cancelled. At least one metadata is required.")
+        
+        try:
+            metadata_list = _prompt_metadata_list(category)
+        except ValueError as e:
+            print_warning(f"Operation cancelled. {e}")
             return
 
-        metadata_list = [Metadata(name=n, category=category) for n in metadata_names_list]
         graph.insert_snippet(snippet_obj, metadata_list, category)
         
         print_success(f"Snippet '{Colors.BOLD}{snippet_obj.name}{Colors.RESET}' inserted and linked to {len(metadata_list)} metadata")
@@ -280,51 +343,63 @@ def _handle_get_snippet(graph: MSMDiGraph):
 
 def _handle_get_all_snippets(graph: MSMDiGraph):
     """Get all snippets"""
-    print_header("All Snippets")
     try:
         all_snippets = graph.get_all_snippets()
+        _display_and_interact_with_snippets(graph, all_snippets, "All Snippets")
+    except Exception as e:
+        print_error(f"Error retrieving snippets: {e}")
+
+def _handle_get_snippets_union(graph: MSMDiGraph):
+    """Get snippets containing at least one of the specified metadata (UNION)"""
+    print_header("Get Snippets by Metadata (UNION)")
+    print_info("Get all snippets that contain AT LEAST ONE of the specified metadata")
+    
+    try:
+        category = _prompt_category()
         
-        if not all_snippets:
-            print_warning("No snippets found in the database.")
+        print(f"\n{Colors.BOLD}Enter metadata names:{Colors.RESET}")
+        try:
+            metadata_list = _prompt_metadata_list(category)
+        except ValueError as e:
+            print_warning(f"Operation cancelled. {e}")
             return
         
-        print(f"{Colors.BOLD}Found {len(all_snippets)} snippet(s):{Colors.RESET}\n")
+        snippets = graph.get_snippets_union(metadata_list)
         
-        # Display all snippets
-        for i, (snippet, metadata_list) in enumerate(all_snippets, 1):
-            # Get category from first metadata (they all have the same category)
-            category = metadata_list[0].category.value if metadata_list else "N/A"
-            
-            print(f"{Colors.YELLOW}{i}.{Colors.RESET} {Colors.BOLD}{snippet.name}{Colors.RESET}")
-            print(f"   {Colors.CYAN}Created:{Colors.RESET}    {snippet.created_at}")
-            print(f"   {Colors.CYAN}Category:{Colors.RESET}   {category}")
-            print(f"   {Colors.CYAN}Metadata:{Colors.RESET}   ", end="")
-            
-            if not metadata_list:
-                print(f"{Colors.DIM}(None){Colors.RESET}")
-            else:
-                metadata_names = ", ".join([m.name for m in metadata_list])
-                print(metadata_names)
-            print()
+        metadata_names = ", ".join([m.name for m in metadata_list])
+        _display_and_interact_with_snippets(
+            graph, 
+            snippets, 
+            f"Snippets with ANY of: {metadata_names}"
+        )
         
-        # Loop to allow viewing multiple snippets
-        while True:
-            view_choice = input_prompt("Enter snippet name to view, or 'n' to return to menu", Colors.GREEN).strip()
-            
-            if view_choice.lower() in ['n', 'no']:
-                return
-            
-            # Try to find and display the snippet
-            if view_choice:
-                try:
-                    snippet, metadata_list = graph.get_snippet(view_choice)
-                    
-                    print(f"\n{Colors.BOLD}{Colors.GREEN}Snippet: {snippet.name}{Colors.RESET}")
-                    open_snippet_in_vim_and_update(graph, snippet)
-                    print()
-                except (KeyError, ValueError, ValidationError) as e:
-                    print_error(f"Error retrieving snippet '{view_choice}': {e}\n")
+    except Exception as e:
+        print_error(f"Error retrieving snippets: {e}")
+
+def _handle_get_snippets_intersection(graph: MSMDiGraph):
+    """Get snippets containing all of the specified metadata (INTERSECTION)"""
+    print_header("Get Snippets by Metadata (INTERSECTION)")
+    print_info("Get all snippets that contain ALL of the specified metadata")
     
+    try:
+        category = _prompt_category()
+        
+        print(f"\n{Colors.BOLD}Enter metadata names:{Colors.RESET}")
+        try:
+            metadata_list = _prompt_metadata_list(category)
+        except ValueError as e:
+            print_warning(f"Operation cancelled. {e}")
+            return
+        
+        snippets = graph.get_snippets_intersection(metadata_list)
+        
+        metadata_names = ", ".join([m.name for m in metadata_list])
+        _display_and_interact_with_snippets(
+            graph, 
+            snippets, 
+            f"Snippets with ALL of: {metadata_names}"
+        )
+        
     except Exception as e:
         print_error(f"Error retrieving snippets: {e}")
 
@@ -358,6 +433,16 @@ MENU_ITEMS = [
         "name": "View all snippets",
         "handler": _handle_get_all_snippets,
         "icon": "📚"
+    },
+    {
+        "name": "Get snippets by metadata (UNION - at least one)",
+        "handler": _handle_get_snippets_union,
+        "icon": "∪"
+    },
+    {
+        "name": "Get snippets by metadata (INTERSECTION - all)",
+        "handler": _handle_get_snippets_intersection,
+        "icon": "∩"
     },
     {
         "name": "Exit",

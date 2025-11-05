@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field, ValidationError, field_validator, model_validator
 from enum import Enum
-from typing import List, Tuple
+from typing import List, Tuple, Set
 from datetime import datetime
 from digraph import ValidatedArangoGraph
 import os
@@ -195,4 +195,32 @@ class MSMDiGraph(ValidatedArangoGraph):
         updated_data = snippet.model_dump(mode='json')
         self.updatev(snippet_name, updated_data)
 
+    def _get_snippets_from_metadata(self, m: Metadata) -> Set[str]:
+        try:
+            pred = self.predecessors(self._format_metdata(m))
+            snippets = self._filter_snippets_from_vertices(pred)
+            return set(snippets)  
+        except:
+            return set()
 
+    def _get_snippets_union_set(self, metadata_list: List[Metadata]) -> Set[str]:
+        match metadata_list:
+            case []: 
+                return set()
+            case [m, *r]:
+                return self._get_snippets_from_metadata(m).union(self._get_snippets_union_set(r))
+    def get_snippets_union(self, metadata_list: List[Metadata]) -> List[Tuple[Snippet, List[Metadata]]]:
+        snippet_keys = list(self._get_snippets_union_set(metadata_list))
+        return self._get_snippets_with_metadata_from_list(snippet_keys)
+
+    def _get_snippets_intersection_set(self, metadata_list: List[Metadata]) -> Set[str]:
+        match metadata_list:
+            case []:
+                return set()
+            case [m]: return self._get_snippets_from_metadata(m)
+            case [m, *r]:
+                rest_set = self._get_snippets_intersection_set(r)
+                return self._get_snippets_from_metadata(m).intersection(rest_set)
+    def get_snippets_intersection(self, metadata_list: List[Metadata]) -> List[Tuple[Snippet, List[Metadata]]]:
+        snippet_keys = list(self._get_snippets_intersection_set(metadata_list))
+        return self._get_snippets_with_metadata_from_list(snippet_keys)
