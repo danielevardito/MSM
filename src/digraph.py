@@ -115,6 +115,13 @@ class ValidatedArangoGraph:
         self.G.add_node(node_key, **data)
         return node_key
 
+    def updatev(self, node_key: str, attributes: Dict[str, Any]):
+        """Update attributes of an existing vertex."""
+        if node_key not in self.G:
+            raise KeyError(f"Vertex '{node_key}' not found.")
+        
+        self.G.nodes[node_key].update(attributes)
+
     def deletev(self, node_key: str):
         """Delete vertex and all its incident edges from graph."""
         if node_key not in self.G:

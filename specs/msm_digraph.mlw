@@ -5,6 +5,7 @@ module MSMDiGraph
   use list.List
   use list.Length
   use list.Mem as LM
+  use list.Map as LMap
 
   type snippet
   type metadata
@@ -22,13 +23,13 @@ module MSMDiGraph
     val dst = dst,
     axiom .
 
-  predicate is_metadata (v: v) =
+  let predicate is_metadata (v: v) =
     match v with
     | M _ -> true
     | S _ -> false
     end
 
-  predicate is_snippet (v: v) =
+  let predicate is_snippet (v: v) =
     match v with
     | M _ -> false
     | S _ -> true
@@ -167,7 +168,43 @@ module MSMDiGraph
 
   let function get_all_metadata_from_snippet (s: v) (g: graph) : list v
     requires  { is_snippet s /\ memv s g }
-    ensures   { forall m: v. LM.mem m result /\ is_metadata m <-> meme (s,m) g }
+    ensures   { forall m: v. LM.mem m result /\ is_metadata m /\ memv m g <-> meme (s,m) g }
   = successors_list s g
+
+  let function get_snippet (s: v) (g: graph) : (snippet: v, metadata_list: list v)
+    requires  { is_snippet s /\ memv s g  }
+    ensures   { s = snippet /\ metadata_list = (get_all_metadata_from_snippet s g) }
+  = s, (get_all_metadata_from_snippet s g)
+
+  let rec function filter_snippets_from_vertices (l: list v) : list v
+    ensures { forall s: v. LM.mem s result <-> is_snippet s /\ LM.mem s l }
+    ensures { length result <= length l }
+    ensures { forall s: v. LM.mem s result -> is_snippet s }
+  = match l with
+    | Nil -> Nil
+    | Cons x r -> if (is_snippet x) then Cons x (filter_snippets_from_vertices r) else (filter_snippets_from_vertices r)
+    end
+
+  let rec function get_snippets_with_metadata_from_list (l: list v) (g: graph) : list (v, list v)
+    requires { forall s: v. LM.mem s l -> is_snippet s /\ memv s g }
+    ensures  { forall s: v, ml: list v. LM.mem (s,ml) result -> (s,ml) = get_snippet s g }
+  = match l with
+    | Nil -> Nil
+    | Cons s r -> Cons (get_snippet s g) (get_snippets_with_metadata_from_list r g)
+    end
+
+  let function get_all_snippets (g: graph) : list (v, list v)
+    ensures { forall s: v, ml: list v.
+                is_snippet s /\ memv s g /\ ml = get_all_metadata_from_snippet s g <-> LM.mem (s, ml) result }
+  = let all_snippets = filter_snippets_from_vertices (vertices_list g) in
+    let all_snippets_with_metadata = get_snippets_with_metadata_from_list all_snippets g in
+    all_snippets_with_metadata
+
+  val function get_all_snippet_from_metadata (m: v) (g: graph) : list v
+
+  val function get_snippet_from_exact_metadata (metadata_list: list v) (g: graph) : list v
+    requires  { forall m: v. LM.mem m metadata_list -> is_metadata m /\ memv m g }
+    ensures   { forall s: v. LM.mem s result -> is_snippet s /\ memv s g }
+    ensures   { forall s m: v. LM.mem s result -> LM.mem m (get_all_metadata_from_snippet s g) }
 
 end

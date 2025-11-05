@@ -170,3 +170,29 @@ class MSMDiGraph(ValidatedArangoGraph):
         snippet_obj = Snippet.model_validate(snippet)
         metadata_list = self._get_all_metadata_from_snippet(snippet_name)
         return snippet_obj, metadata_list
+
+    def _get_snippets_with_metadata_from_list(self, l: List[str]) -> List[Tuple[Snippet, List[Metadata]]]:
+        match l:
+            case []: return []
+            case [s, *r]: return [self.get_snippet(s)] + self._get_snippets_with_metadata_from_list(r)
+
+    def _filter_snippets_from_vertices (self, l: List[str]) -> List[str]:
+        match l:
+            case []: return []
+            case [x, *r]:
+                tail = self._filter_snippets_from_vertices(r)
+                rec = [x] + tail if self.is_snippet(x) else tail 
+                return rec
+
+    def get_all_snippets(self) -> List[Tuple[Snippet, List[Metadata]]]:
+        all_snippets = self._filter_snippets_from_vertices (self.vertices_list())
+        all_snippets_with_metadata = self._get_snippets_with_metadata_from_list(all_snippets)
+        return all_snippets_with_metadata
+
+    def update_snippet_content(self, snippet_name: str, content: str):
+        snippet, _ = self.get_snippet(snippet_name)
+        snippet.content = content
+        updated_data = snippet.model_dump(mode='json')
+        self.updatev(snippet_name, updated_data)
+
+

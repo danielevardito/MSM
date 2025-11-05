@@ -123,8 +123,13 @@ theory DiGraph
       l = fset_to_list s
         -> cardinal s = length l
 
-  function vertices_list (g: graph) : list v = fset_to_list g.vertices 
-  function edges_list (g: graph) : list e = fset_to_list g.edges 
+  let function vertices_list (g: graph) : list v 
+    ensures { forall v: v. memv v g <-> LM.mem v result }
+  = fset_to_list g.vertices 
+
+  let function edges_list (g: graph) : list e 
+    ensures { forall e: e. meme e g <-> LM.mem e result }
+  = fset_to_list g.edges 
   
   val function deletev (v: v) (g: graph) : graph
     ensures { result.vertices = Fset.remove v g.vertices }

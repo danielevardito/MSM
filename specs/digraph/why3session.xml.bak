@@ -63,6 +63,12 @@
  <goal name="cardinal_eq_length" proved="true">
  <proof prover="2"><result status="valid" time="0.020816" steps="63664"/></proof>
  </goal>
+ <goal name="vertices_list&#39;vc" expl="VC for vertices_list" proved="true">
+ <proof prover="2"><result status="valid" time="0.017813" steps="83910"/></proof>
+ </goal>
+ <goal name="edges_list&#39;vc" expl="VC for edges_list" proved="true">
+ <proof prover="2"><result status="valid" time="0.018064" steps="83069"/></proof>
+ </goal>
  <goal name="edgesv_empty" proved="true">
  <proof prover="2"><result status="valid" time="0.046003" steps="114576"/></proof>
  </goal>
@@ -76,7 +82,7 @@
  <proof prover="2"><result status="valid" time="0.038323" steps="103622"/></proof>
  </goal>
  <goal name="deletev_cardinal_edges" proved="true">
- <proof prover="1"><result status="valid" time="0.189102" steps="403"/></proof>
+ <proof prover="1"><result status="valid" time="0.189102" steps="424"/></proof>
  </goal>
  <goal name="deletev_notmeme" proved="true">
  <proof prover="2"><result status="valid" time="0.020839" steps="62832"/></proof>
@@ -99,7 +105,7 @@
     <proof prover="2" timelimit="5" memlimit="2000" obsolete="true"><result status="timeout" time="5.000000"/></proof>
     <transf name="inline_goal" proved="true" >
      <goal name="meme_inserte.0.0.0.0" proved="true">
-     <proof prover="1"><result status="valid" time="0.031349" steps="40"/></proof>
+     <proof prover="1"><result status="valid" time="0.031349" steps="48"/></proof>
      </goal>
     </transf>
     </goal>
@@ -110,7 +116,7 @@
  </transf>
  </goal>
  <goal name="inserte_cardinal_edges" proved="true">
- <proof prover="1"><result status="valid" time="0.029855" steps="84"/></proof>
+ <proof prover="1"><result status="valid" time="0.029855" steps="98"/></proof>
  </goal>
  <goal name="deletee_cardinal_edges" proved="true">
  <proof prover="2"><result status="valid" time="0.059488" steps="163697"/></proof>
@@ -119,10 +125,10 @@
  <proof prover="2"><result status="valid" time="0.141240" steps="62660"/></proof>
  </goal>
  <goal name="members_successors" proved="true">
- <proof prover="1"><result status="valid" time="0.033717" steps="143"/></proof>
+ <proof prover="1"><result status="valid" time="0.033717" steps="147"/></proof>
  </goal>
  <goal name="members_predecessors" proved="true">
- <proof prover="1"><result status="valid" time="0.040604" steps="144"/></proof>
+ <proof prover="1"><result status="valid" time="0.040604" steps="148"/></proof>
  </goal>
 </theory>
 </file>
