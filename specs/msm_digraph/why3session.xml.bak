@@ -9,22 +9,22 @@
 <path name=".."/><path name="msm_digraph.mlw"/>
 <theory name="MSMDiGraph">
  <goal name="metadata_src_implies_dst" proved="true">
- <proof prover="2"><result status="valid" time="0.019755" steps="78296"/></proof>
+ <proof prover="2"><result status="valid" time="0.019755" steps="78488"/></proof>
  </goal>
  <goal name="metadata_out_eq" proved="true">
- <proof prover="2"><result status="valid" time="0.023667" steps="97789"/></proof>
+ <proof prover="2"><result status="valid" time="0.023667" steps="97981"/></proof>
  </goal>
  <goal name="metadata_indegree_le_cardinale" proved="true">
- <proof prover="2"><result status="valid" time="0.024186" steps="96903"/></proof>
+ <proof prover="2"><result status="valid" time="0.024186" steps="97099"/></proof>
  </goal>
  <goal name="metadata_outdegree_le_cardinale" proved="true">
- <proof prover="2"><result status="valid" time="0.020515" steps="86792"/></proof>
+ <proof prover="2"><result status="valid" time="0.020515" steps="86996"/></proof>
  </goal>
  <goal name="metadata_outdegree_le_outdegree" proved="true">
- <proof prover="2"><result status="valid" time="0.023965" steps="86327"/></proof>
+ <proof prover="2"><result status="valid" time="0.023965" steps="86535"/></proof>
  </goal>
  <goal name="snippet_metadata_outdegree_le_cardinale" proved="true">
- <proof prover="2"><result status="valid" time="0.272122" steps="730327"/></proof>
+ <proof prover="2"><result status="valid" time="0.272122" steps="730517"/></proof>
  </goal>
  <goal name="snippet_metadata_indegree_le_cardinale" proved="true">
  <proof prover="0" obsolete="true"><result status="timeout" time="1.000000" steps="329620"/></proof>
@@ -32,27 +32,27 @@
  <proof prover="2" obsolete="true"><result status="timeout" time="1.000000"/></proof>
  <transf name="split_vc" proved="true" >
   <goal name="snippet_metadata_indegree_le_cardinale.0" proved="true">
-  <proof prover="0"><result status="valid" time="1.081522" steps="338840"/></proof>
+  <proof prover="0"><result status="valid" time="1.081522" steps="340597"/></proof>
   </goal>
   <goal name="snippet_metadata_indegree_le_cardinale.1" proved="true">
-  <proof prover="0"><result status="valid" time="1.255749" steps="339566"/></proof>
+  <proof prover="0"><result status="valid" time="1.255749" steps="340817"/></proof>
   </goal>
  </transf>
  </goal>
  <goal name="not_metadata_to_snippet" proved="true">
- <proof prover="2"><result status="valid" time="0.021809" steps="87779"/></proof>
+ <proof prover="2"><result status="valid" time="0.021809" steps="88003"/></proof>
  </goal>
  <goal name="insert_freemetadata&#39;vc" expl="VC for insert_freemetadata" proved="true">
- <proof prover="2"><result status="valid" time="0.021036" steps="89396"/></proof>
+ <proof prover="2"><result status="valid" time="0.021036" steps="89628"/></proof>
  </goal>
  <goal name="insert_metadata&#39;vc" expl="VC for insert_metadata" proved="true">
- <proof prover="1"><result status="valid" time="0.117215" steps="329"/></proof>
+ <proof prover="1"><result status="valid" time="0.117215" steps="505"/></proof>
  </goal>
  <goal name="insert_metadata_cardinal_edges_vertices" proved="true">
- <proof prover="1"><result status="valid" time="0.077811" steps="279"/></proof>
+ <proof prover="1"><result status="valid" time="0.077811" steps="370"/></proof>
  </goal>
  <goal name="insert_metadata_meme" proved="true">
- <proof prover="2"><result status="valid" time="0.032035" steps="124579"/></proof>
+ <proof prover="2"><result status="valid" time="0.032035" steps="124863"/></proof>
  </goal>
  <goal name="insert_metadata_list_for_snippet&#39;vc" expl="VC for insert_metadata_list_for_snippet" proved="true">
  <proof prover="0" obsolete="true"><result status="timeout" time="1.000000" steps="253539"/></proof>
@@ -60,7 +60,7 @@
  <proof prover="2" obsolete="true"><result status="timeout" time="1.000000"/></proof>
  <transf name="split_vc" proved="true" >
   <goal name="insert_metadata_list_for_snippet&#39;vc.0" expl="precondition" proved="true">
-  <proof prover="1"><result status="valid" time="0.024000" steps="71"/></proof>
+  <proof prover="1"><result status="valid" time="0.026215" steps="67"/></proof>
   </goal>
   <goal name="insert_metadata_list_for_snippet&#39;vc.1" expl="precondition" proved="true">
   <proof prover="0" obsolete="true"><result status="timeout" time="1.000000" steps="320430"/></proof>
@@ -68,18 +68,19 @@
   <proof prover="2" obsolete="true"><result status="timeout" time="1.000000"/></proof>
   <transf name="split_vc" proved="true" >
    <goal name="insert_metadata_list_for_snippet&#39;vc.1.0" expl="precondition" proved="true">
-   <proof prover="0" timelimit="5" memlimit="2000"><result status="valid" time="3.385230" steps="1149027"/></proof>
+   <proof prover="0" timelimit="5" memlimit="2000"><result status="valid" time="3.272246" steps="1150077"/></proof>
    </goal>
   </transf>
   </goal>
   <goal name="insert_metadata_list_for_snippet&#39;vc.2" expl="precondition" proved="true">
-  <proof prover="2"><result status="valid" time="0.009950" steps="8148"/></proof>
+  <proof prover="2"><result status="valid" time="0.009950" steps="8432"/></proof>
   </goal>
   <goal name="insert_metadata_list_for_snippet&#39;vc.3" expl="precondition" proved="true">
-  <proof prover="2"><result status="valid" time="0.025926" steps="113821"/></proof>
+  <proof prover="2"><result status="valid" time="0.025926" steps="114105"/></proof>
   </goal>
   <goal name="insert_metadata_list_for_snippet&#39;vc.4" expl="precondition" proved="true">
-  <proof prover="2"><result status="valid" time="0.034067" steps="127953"/></proof>
+  <proof prover="1" obsolete="true"><result status="valid" time="0.024000" steps="71"/></proof>
+  <proof prover="2"><result status="valid" time="0.027893" steps="128245"/></proof>
   </goal>
   <goal name="insert_metadata_list_for_snippet&#39;vc.5" expl="postcondition" proved="true">
   <proof prover="0" obsolete="true"><result status="timeout" time="1.000000" steps="342236"/></proof>
@@ -87,53 +88,54 @@
   <proof prover="2" obsolete="true"><result status="timeout" time="1.000000"/></proof>
   <transf name="split_vc" proved="true" >
    <goal name="insert_metadata_list_for_snippet&#39;vc.5.0" expl="postcondition" proved="true">
-   <proof prover="2"><result status="valid" time="0.025212" steps="113496"/></proof>
+   <proof prover="2"><result status="valid" time="0.027552" steps="113780"/></proof>
    </goal>
    <goal name="insert_metadata_list_for_snippet&#39;vc.5.1" expl="postcondition" proved="true">
-   <proof prover="2"><result status="valid" time="0.027552" steps="117755"/></proof>
+   <proof prover="2"><result status="valid" time="0.025212" steps="118051"/></proof>
    </goal>
   </transf>
   </goal>
   <goal name="insert_metadata_list_for_snippet&#39;vc.6" expl="postcondition" proved="true">
-  <proof prover="0" obsolete="true"><result status="timeout" time="1.000000" steps="249638"/></proof>
-  <proof prover="1" obsolete="true"><result status="timeout" time="1.000000"/></proof>
-  <proof prover="2" obsolete="true"><result status="timeout" time="1.000000"/></proof>
-  <transf name="split_vc" proved="true" >
-   <goal name="insert_metadata_list_for_snippet&#39;vc.6.0" expl="postcondition" proved="true">
-   <proof prover="2"><result status="valid" time="0.018049" steps="63479"/></proof>
-   </goal>
-   <goal name="insert_metadata_list_for_snippet&#39;vc.6.1" expl="postcondition" proved="true">
-   <proof prover="2"><result status="valid" time="0.031946" steps="146186"/></proof>
-   </goal>
-  </transf>
-  </goal>
-  <goal name="insert_metadata_list_for_snippet&#39;vc.7" expl="postcondition" proved="true">
   <proof prover="0" obsolete="true"><result status="timeout" time="1.000000" steps="258123"/></proof>
   <proof prover="1" obsolete="true"><result status="timeout" time="1.000000"/></proof>
   <proof prover="2" obsolete="true"><result status="timeout" time="1.000000"/></proof>
   <transf name="split_vc" proved="true" >
+   <goal name="insert_metadata_list_for_snippet&#39;vc.6.0" expl="postcondition" proved="true">
+   <proof prover="1" obsolete="true"><result status="valid" time="0.020030" steps="21"/></proof>
+   <proof prover="2"><result status="valid" time="0.026097" steps="63771"/></proof>
+   </goal>
+   <goal name="insert_metadata_list_for_snippet&#39;vc.6.1" expl="postcondition" proved="true">
+   <proof prover="1" obsolete="true"><result status="valid" time="0.017515" steps="84"/></proof>
+   <proof prover="2"><result status="valid" time="0.031675" steps="146484"/></proof>
+   </goal>
+  </transf>
+  </goal>
+  <goal name="insert_metadata_list_for_snippet&#39;vc.7" expl="postcondition" proved="true">
+  <proof prover="0" obsolete="true"><result status="timeout" time="1.000000" steps="249638"/></proof>
+  <proof prover="1" obsolete="true"><result status="timeout" time="1.000000"/></proof>
+  <proof prover="2" obsolete="true"><result status="timeout" time="1.000000"/></proof>
+  <transf name="split_vc" proved="true" >
    <goal name="insert_metadata_list_for_snippet&#39;vc.7.0" expl="postcondition" proved="true">
-   <proof prover="1"><result status="valid" time="0.017515" steps="84"/></proof>
+   <proof prover="1"><result status="valid" time="0.030627" steps="78"/></proof>
    </goal>
    <goal name="insert_metadata_list_for_snippet&#39;vc.7.1" expl="postcondition" proved="true">
-   <proof prover="1" obsolete="true"><result status="valid" time="0.020030" steps="21"/></proof>
-   <proof prover="2"><result status="valid" time="0.026097" steps="129391"/></proof>
+   <proof prover="2"><result status="valid" time="0.018049" steps="129687"/></proof>
    </goal>
   </transf>
   </goal>
  </transf>
  </goal>
  <goal name="insert_snippet&#39;vc" expl="VC for insert_snippet" proved="true">
- <proof prover="2"><result status="valid" time="0.148843" steps="392192"/></proof>
+ <proof prover="2"><result status="valid" time="0.148843" steps="392684"/></proof>
  </goal>
  <goal name="insert_snippet_cardinal_edges" proved="true">
- <proof prover="0"><result status="valid" time="0.105123" steps="33273"/></proof>
+ <proof prover="0"><result status="valid" time="0.105123" steps="33993"/></proof>
  </goal>
  <goal name="get_all_metadata_from_snippet&#39;vc" expl="VC for get_all_metadata_from_snippet" proved="true">
- <proof prover="2"><result status="valid" time="0.399164" steps="1110061"/></proof>
+ <proof prover="2"><result status="valid" time="0.399164" steps="1110953"/></proof>
  </goal>
  <goal name="get_snippet&#39;vc" expl="VC for get_snippet" proved="true">
- <proof prover="2"><result status="valid" time="0.021472" steps="8649"/></proof>
+ <proof prover="2"><result status="valid" time="0.021472" steps="9049"/></proof>
  </goal>
  <goal name="filter_snippets_from_vertices&#39;vc" expl="VC for filter_snippets_from_vertices" proved="true">
  <proof prover="1"><result status="valid" time="0.039648" steps="305"/></proof>
@@ -142,10 +144,11 @@
  <proof prover="1" obsolete="true"><result status="valid" time="0.081118" steps="166"/></proof>
  <transf name="split_vc" proved="true" >
   <goal name="get_snippets_with_metadata_from_list&#39;vc.0" expl="precondition" proved="true">
-  <proof prover="2"><result status="valid" time="0.041179" steps="119079"/></proof>
+  <proof prover="1" obsolete="true"><result status="valid" time="0.047304" steps="20"/></proof>
+  <proof prover="2"><result status="valid" time="0.022954" steps="119459"/></proof>
   </goal>
   <goal name="get_snippets_with_metadata_from_list&#39;vc.1" expl="precondition" proved="true">
-  <proof prover="1"><result status="valid" time="0.047304" steps="20"/></proof>
+  <proof prover="2"><result status="valid" time="1.643933" steps="10616763"/></proof>
   </goal>
   <goal name="get_snippets_with_metadata_from_list&#39;vc.2" expl="postcondition" proved="true">
   <proof prover="0" obsolete="true"><result status="timeout" time="1.000000" steps="151631"/></proof>
@@ -153,12 +156,12 @@
   <proof prover="2" obsolete="true"><result status="timeout" time="1.000000"/></proof>
   <transf name="split_vc" proved="true" >
    <goal name="get_snippets_with_metadata_from_list&#39;vc.2.0" expl="postcondition" proved="true">
-   <proof prover="0" obsolete="true"><result status="timeout" time="1.000000" steps="282328"/></proof>
+   <proof prover="0" obsolete="true"><result status="timeout" time="1.000000" steps="282321"/></proof>
    <proof prover="1" obsolete="true"><result status="timeout" time="1.000000"/></proof>
    <proof prover="2" obsolete="true"><result status="timeout" time="1.000000"/></proof>
    <transf name="split_vc" proved="true" >
     <goal name="get_snippets_with_metadata_from_list&#39;vc.2.0.0" expl="postcondition" proved="true">
-    <proof prover="1"><result status="valid" time="0.023651" steps="8"/></proof>
+    <proof prover="1"><result status="valid" time="0.024109" steps="8"/></proof>
     </goal>
     <goal name="get_snippets_with_metadata_from_list&#39;vc.2.1.0" expl="postcondition">
     <proof prover="0"><undone/></proof>
@@ -168,13 +171,13 @@
    </transf>
    </goal>
    <goal name="get_snippets_with_metadata_from_list&#39;vc.2.1" expl="postcondition" proved="true">
-   <proof prover="0" obsolete="true"><result status="timeout" time="1.000000" steps="282321"/></proof>
+   <proof prover="0" obsolete="true"><result status="timeout" time="1.000000" steps="282328"/></proof>
    <proof prover="1" obsolete="true"><result status="timeout" time="1.000000"/></proof>
    <proof prover="2" obsolete="true"><result status="timeout" time="1.000000"/></proof>
    <transf name="split_vc" proved="true" >
     <goal name="get_snippets_with_metadata_from_list&#39;vc.2.1.0" expl="postcondition" proved="true">
-    <proof prover="1" obsolete="true"><result status="valid" time="0.024109" steps="8"/></proof>
-    <proof prover="2"><result status="valid" time="0.025119" steps="130361"/></proof>
+    <proof prover="1" obsolete="true"><result status="valid" time="0.023651" steps="8"/></proof>
+    <proof prover="2"><result status="valid" time="0.022138" steps="130761"/></proof>
     </goal>
     <goal name="get_snippets_with_metadata_from_list&#39;vc.2.1.0" expl="postcondition">
     <proof prover="0"><undone/></proof>
@@ -188,9 +191,10 @@
  </transf>
  </goal>
  <goal name="get_all_snippets&#39;vc" expl="VC for get_all_snippets">
+ <proof prover="2"><undone/></proof>
  <transf name="split_vc" >
   <goal name="get_all_snippets&#39;vc.0" expl="precondition" proved="true">
-  <proof prover="2"><result status="valid" time="0.019355" steps="111336"/></proof>
+  <proof prover="2"><result status="valid" time="0.019355" steps="111720"/></proof>
   </goal>
   <goal name="get_all_snippets&#39;vc.1" expl="postcondition">
   <proof prover="0" obsolete="true"><result status="timeout" time="2.000000" steps="900747"/></proof>
@@ -198,7 +202,7 @@
   <proof prover="2" obsolete="true"><result status="timeout" time="1.000000"/></proof>
   <transf name="split_vc" >
    <goal name="get_all_snippets&#39;vc.1.0" expl="postcondition" proved="true">
-   <proof prover="0"><result status="valid" time="0.826276" steps="226773"/></proof>
+   <proof prover="0"><result status="valid" time="0.826276" steps="228172"/></proof>
    </goal>
    <goal name="get_all_snippets&#39;vc.1.1" expl="postcondition">
    <transf name="inline_goal" >
@@ -208,8 +212,8 @@
      <transf name="split_vc" >
       <goal name="get_all_snippets&#39;vc.1.1.0.0.0" expl="VC for get_all_snippets">
       <proof prover="0" timelimit="30" memlimit="4000"><undone/></proof>
-      <proof prover="1" timelimit="30" memlimit="4000"><undone/></proof>
-      <proof prover="2" timelimit="30" memlimit="4000"><undone/></proof>
+      <proof prover="1" timelimit="30" memlimit="4000"><result status="timeout" time="30.000000"/></proof>
+      <proof prover="2" timelimit="30" memlimit="4000"><result status="timeout" time="30.000000"/></proof>
       </goal>
      </transf>
      </goal>
@@ -241,31 +245,443 @@
    </transf>
    </goal>
    <goal name="get_all_snippets&#39;vc.1.3" expl="postcondition">
-   <proof prover="0" timelimit="5" memlimit="2000"><undone/></proof>
-   <proof prover="1" timelimit="5" memlimit="2000"><undone/></proof>
-   <proof prover="2" timelimit="5" memlimit="2000"><undone/></proof>
+   <proof prover="0" timelimit="30" memlimit="4000"><undone/></proof>
+   <proof prover="1" timelimit="30" memlimit="4000"><undone/></proof>
+   <proof prover="2" timelimit="30" memlimit="4000"><result status="timeout" time="30.000000"/></proof>
    </goal>
   </transf>
   </goal>
  </transf>
  </goal>
  <goal name="get_snippets_from_metadata&#39;vc" expl="VC for get_snippets_from_metadata" proved="true">
- <proof prover="1"><result status="valid" time="0.600438" steps="1341"/></proof>
+ <proof prover="1"><result status="valid" time="0.600438" steps="1295"/></proof>
  </goal>
  <goal name="get_snippets_union&#39;vc" expl="VC for get_snippets_union" proved="true">
  <proof prover="1"><result status="valid" time="0.032665" steps="123"/></proof>
  </goal>
  <goal name="get_snippets_union_list&#39;vc" expl="VC for get_snippets_union_list" proved="true">
- <proof prover="2"><result status="valid" time="0.005958" steps="9102"/></proof>
+ <proof prover="2"><result status="valid" time="0.005958" steps="9482"/></proof>
  </goal>
  <goal name="get_snippets_intersection&#39;vc" expl="VC for get_snippets_intersection" proved="true">
  <proof prover="1"><result status="valid" time="0.030612" steps="221"/></proof>
  </goal>
  <goal name="get_snippets_intersection_list&#39;vc" expl="VC for get_snippets_intersection_list" proved="true">
- <proof prover="2"><result status="valid" time="0.007167" steps="9162"/></proof>
+ <proof prover="2"><result status="valid" time="0.007167" steps="9542"/></proof>
  </goal>
  <goal name="delete_snippet&#39;vc" expl="VC for delete_snippet" proved="true">
- <proof prover="2"><result status="valid" time="0.445878" steps="1349039"/></proof>
+ <proof prover="0"><result status="timeout" time="1.000000" steps="275493"/></proof>
+ <proof prover="1"><result status="timeout" time="1.000000"/></proof>
+ <proof prover="2"><undone/></proof>
+ <transf name="split_vc" proved="true" >
+  <goal name="delete_snippet&#39;vc.0" expl="postcondition" proved="true">
+  <proof prover="2"><result status="valid" time="0.736135" steps="1820751"/></proof>
+  </goal>
+  <goal name="delete_snippet&#39;vc.1" expl="postcondition" proved="true">
+  <proof prover="2"><result status="valid" time="0.022950" steps="113191"/></proof>
+  </goal>
+  <goal name="delete_snippet&#39;vc.2" expl="postcondition" proved="true">
+  <proof prover="0"><result status="timeout" time="1.000000" steps="439547"/></proof>
+  <proof prover="1"><result status="timeout" time="1.000000"/></proof>
+  <proof prover="2"><result status="timeout" time="1.000000"/></proof>
+  <transf name="split_vc" proved="true" >
+   <goal name="delete_snippet&#39;vc.2.0" expl="postcondition" proved="true">
+   <proof prover="2"><result status="valid" time="0.076979" steps="294497"/></proof>
+   </goal>
+   <goal name="delete_snippet&#39;vc.2.1" expl="postcondition" proved="true">
+   <proof prover="2"><result status="valid" time="0.019966" steps="114243"/></proof>
+   </goal>
+  </transf>
+  </goal>
+ </transf>
+ </goal>
+ <goal name="snippet_not_mem" proved="true">
+ <proof prover="2"><result status="valid" time="0.025808" steps="115357"/></proof>
+ </goal>
+ <goal name="only_metadata_of_snippet&#39;vc" expl="VC for only_metadata_of_snippet" proved="true">
+ <proof prover="2"><result status="valid" time="0.014437" steps="152660"/></proof>
+ </goal>
+ <goal name="no_edges_deletev" proved="true">
+ <proof prover="2"><result status="valid" time="0.022210" steps="118838"/></proof>
+ </goal>
+ <goal name="delete_snippets_with_only_m&#39;vc" expl="VC for delete_snippets_with_only_m" proved="true">
+ <proof prover="0"><result status="timeout" time="1.000000" steps="372897"/></proof>
+ <proof prover="1"><result status="timeout" time="1.000000"/></proof>
+ <proof prover="2"><result status="timeout" time="1.000000"/></proof>
+ <transf name="split_vc" >
+  <goal name="delete_snippets_with_only_m&#39;vc.0" expl="precondition">
+  </goal>
+  <goal name="delete_snippets_with_only_m&#39;vc.1" expl="postcondition">
+  <proof prover="0" obsolete="true"><result status="timeout" time="1.000000" steps="246038"/></proof>
+  <proof prover="1" obsolete="true"><result status="timeout" time="1.000000"/></proof>
+  <proof prover="2" obsolete="true"><result status="timeout" time="1.000000"/></proof>
+  <transf name="split_vc" >
+   <goal name="delete_snippets_with_only_m&#39;vc.1.0" expl="postcondition">
+   <proof prover="0" obsolete="true"><result status="timeout" time="1.000000" steps="353514"/></proof>
+   <proof prover="1" obsolete="true"><result status="timeout" time="1.000000"/></proof>
+   <proof prover="2" obsolete="true"><result status="timeout" time="1.000000"/></proof>
+   <transf name="split_vc" >
+    <goal name="delete_snippets_with_only_m&#39;vc.1.0.0" expl="postcondition">
+    <proof prover="1" obsolete="true"><result status="valid" time="0.028463" steps="15"/></proof>
+    </goal>
+    <goal name="delete_snippets_with_only_m&#39;vc.1.0.1" expl="postcondition">
+    <proof prover="0" obsolete="true"><result status="timeout" time="1.000000" steps="197105"/></proof>
+    <proof prover="1" obsolete="true"><result status="timeout" time="1.000000"/></proof>
+    <proof prover="2" obsolete="true"><result status="timeout" time="1.000000"/></proof>
+    <transf name="split_vc" >
+     <goal name="delete_snippets_with_only_m&#39;vc.1.0.1.0" expl="postcondition">
+     <proof prover="0" timelimit="30" memlimit="4000" obsolete="true"><undone/></proof>
+     <proof prover="1" timelimit="30" memlimit="4000" obsolete="true"><result status="timeout" time="30.000000"/></proof>
+     <proof prover="2" timelimit="30" memlimit="4000" obsolete="true"><result status="timeout" time="30.000000"/></proof>
+     </goal>
+     <goal name="delete_snippets_with_only_m&#39;vc.1.0.1.1" expl="postcondition">
+     <proof prover="0" timelimit="30" memlimit="4000" obsolete="true"><undone/></proof>
+     <proof prover="1" timelimit="30" memlimit="4000" obsolete="true"><undone/></proof>
+     <proof prover="2" timelimit="30" memlimit="4000" obsolete="true"><undone/></proof>
+     </goal>
+    </transf>
+    </goal>
+   </transf>
+   </goal>
+   <goal name="delete_snippets_with_only_m&#39;vc.1.1" expl="postcondition">
+   <proof prover="0" obsolete="true"><result status="timeout" time="1.000000" steps="369501"/></proof>
+   <proof prover="1" obsolete="true"><result status="timeout" time="1.000000"/></proof>
+   <proof prover="2" obsolete="true"><result status="timeout" time="1.000000"/></proof>
+   <transf name="split_vc" >
+    <goal name="delete_snippets_with_only_m&#39;vc.1.1.0" expl="postcondition">
+    <proof prover="1" obsolete="true"><result status="valid" time="0.045474" steps="87"/></proof>
+    </goal>
+    <goal name="delete_snippets_with_only_m&#39;vc.1.1.1" expl="postcondition">
+    <proof prover="0" obsolete="true"><result status="timeout" time="1.000000" steps="243865"/></proof>
+    <proof prover="1" obsolete="true"><result status="timeout" time="1.000000"/></proof>
+    <proof prover="2" obsolete="true"><result status="timeout" time="1.000000"/></proof>
+    <transf name="split_vc" >
+     <goal name="delete_snippets_with_only_m&#39;vc.1.1.1.0" expl="postcondition">
+     <proof prover="0" timelimit="30" memlimit="4000" obsolete="true"><undone/></proof>
+     <proof prover="1" timelimit="30" memlimit="4000" obsolete="true"><undone/></proof>
+     <proof prover="2" timelimit="30" memlimit="4000" obsolete="true"><undone/></proof>
+     </goal>
+     <goal name="delete_snippets_with_only_m&#39;vc.1.1.1.1" expl="postcondition">
+     <proof prover="0" timelimit="30" memlimit="4000" obsolete="true"><undone/></proof>
+     <proof prover="1" timelimit="30" memlimit="4000" obsolete="true"><undone/></proof>
+     <proof prover="2" timelimit="30" memlimit="4000" obsolete="true"><undone/></proof>
+     </goal>
+    </transf>
+    </goal>
+   </transf>
+   </goal>
+  </transf>
+  </goal>
+  <goal name="delete_snippets_with_only_m&#39;vc.2" expl="postcondition">
+  <proof prover="0" obsolete="true"><result status="valid" time="0.240230" steps="62661"/></proof>
+  </goal>
+  <goal name="delete_snippets_with_only_m&#39;vc.3" expl="postcondition">
+  <proof prover="0" obsolete="true"><result status="timeout" time="1.000000" steps="262063"/></proof>
+  <proof prover="1" obsolete="true"><result status="timeout" time="1.000000"/></proof>
+  <proof prover="2" obsolete="true"><result status="timeout" time="1.000000"/></proof>
+  <transf name="split_vc" >
+   <goal name="delete_snippets_with_only_m&#39;vc.3.0" expl="postcondition">
+   <proof prover="0" obsolete="true"><result status="timeout" time="1.000000" steps="243979"/></proof>
+   <proof prover="1" obsolete="true"><result status="timeout" time="1.000000"/></proof>
+   <proof prover="2" obsolete="true"><result status="timeout" time="1.000000"/></proof>
+   <transf name="split_vc" >
+    <goal name="delete_snippets_with_only_m&#39;vc.3.0.0" expl="postcondition">
+    <proof prover="2" obsolete="true"><result status="valid" time="0.016601" steps="69037"/></proof>
+    </goal>
+    <goal name="delete_snippets_with_only_m&#39;vc.3.0.1" expl="postcondition">
+    <proof prover="0" obsolete="true"><result status="timeout" time="1.000000" steps="278540"/></proof>
+    <proof prover="1" obsolete="true"><result status="timeout" time="1.000000"/></proof>
+    <proof prover="2" obsolete="true"><result status="timeout" time="1.000000"/></proof>
+    <transf name="split_vc" >
+     <goal name="delete_snippets_with_only_m&#39;vc.3.0.1.0" expl="postcondition">
+     <proof prover="0" timelimit="5" memlimit="2000" obsolete="true"><result status="valid" time="2.870036" steps="636352"/></proof>
+     </goal>
+     <goal name="delete_snippets_with_only_m&#39;vc.3.0.1.1" expl="postcondition">
+     <proof prover="2" obsolete="true"><result status="valid" time="0.020410" steps="77952"/></proof>
+     </goal>
+    </transf>
+    </goal>
+   </transf>
+   </goal>
+   <goal name="delete_snippets_with_only_m&#39;vc.3.1" expl="postcondition">
+   <proof prover="0" obsolete="true"><result status="timeout" time="1.000000" steps="263000"/></proof>
+   <proof prover="1" obsolete="true"><result status="timeout" time="1.000000"/></proof>
+   <proof prover="2" obsolete="true"><result status="timeout" time="1.000000"/></proof>
+   <transf name="split_vc" >
+    <goal name="delete_snippets_with_only_m&#39;vc.3.1.0" expl="postcondition">
+    <proof prover="2" obsolete="true"><result status="valid" time="0.019884" steps="69037"/></proof>
+    </goal>
+    <goal name="delete_snippets_with_only_m&#39;vc.3.1.1" expl="postcondition">
+    <proof prover="1" obsolete="true"><result status="valid" time="0.065749" steps="232"/></proof>
+    </goal>
+   </transf>
+   </goal>
+  </transf>
+  </goal>
+ </transf>
+ <transf name="split_vc" >
+  <goal name="delete_snippets_with_only_m&#39;vc.0" expl="precondition">
+  <proof prover="2" obsolete="true"><result status="valid" time="0.009059" steps="14020"/></proof>
+  </goal>
+  <goal name="delete_snippets_with_only_m&#39;vc.1" expl="postcondition">
+  <proof prover="0" obsolete="true"><result status="timeout" time="1.000000" steps="249911"/></proof>
+  <proof prover="1" obsolete="true"><result status="timeout" time="1.000000"/></proof>
+  <proof prover="2" obsolete="true"><result status="timeout" time="1.000000"/></proof>
+  <transf name="split_vc" >
+   <goal name="delete_snippets_with_only_m&#39;vc.1.0" expl="postcondition">
+   <proof prover="0" obsolete="true"><result status="timeout" time="1.000000" steps="427254"/></proof>
+   <proof prover="1" obsolete="true"><result status="timeout" time="1.000000"/></proof>
+   <proof prover="2" obsolete="true"><result status="timeout" time="1.000000"/></proof>
+   <transf name="split_vc" >
+    <goal name="delete_snippets_with_only_m&#39;vc.1.0.0" expl="postcondition">
+    <proof prover="1" obsolete="true"><result status="valid" time="0.028688" steps="15"/></proof>
+    </goal>
+    <goal name="delete_snippets_with_only_m&#39;vc.1.0.1" expl="postcondition">
+    <proof prover="0" obsolete="true"><result status="timeout" time="1.000000" steps="217092"/></proof>
+    <proof prover="1" obsolete="true"><result status="timeout" time="1.000000"/></proof>
+    <proof prover="2" obsolete="true"><result status="timeout" time="1.000000"/></proof>
+    <transf name="split_vc" >
+     <goal name="delete_snippets_with_only_m&#39;vc.1.0.1.0" expl="postcondition">
+     <proof prover="2" obsolete="true"><result status="valid" time="0.066676" steps="254414"/></proof>
+     </goal>
+     <goal name="delete_snippets_with_only_m&#39;vc.1.0.1.1" expl="postcondition">
+     <proof prover="0" timelimit="30" memlimit="4000" obsolete="true"><result status="timeout" time="30.000000" steps="10397305"/></proof>
+     <proof prover="1" timelimit="30" memlimit="4000" obsolete="true"><result status="timeout" time="30.000000"/></proof>
+     <proof prover="2" timelimit="30" memlimit="4000" obsolete="true"><result status="timeout" time="30.000000"/></proof>
+     </goal>
+    </transf>
+    </goal>
+   </transf>
+   </goal>
+   <goal name="delete_snippets_with_only_m&#39;vc.1.1" expl="postcondition">
+   <proof prover="0" obsolete="true"><result status="timeout" time="1.000000" steps="444862"/></proof>
+   <proof prover="1" obsolete="true"><result status="timeout" time="1.000000"/></proof>
+   <proof prover="2" obsolete="true"><result status="timeout" time="1.000000"/></proof>
+   <transf name="split_vc" >
+    <goal name="delete_snippets_with_only_m&#39;vc.1.1.0" expl="postcondition">
+    <proof prover="1" obsolete="true"><result status="valid" time="0.043568" steps="87"/></proof>
+    </goal>
+    <goal name="delete_snippets_with_only_m&#39;vc.1.1.1" expl="postcondition">
+    <proof prover="0" obsolete="true"><result status="timeout" time="1.000000" steps="232434"/></proof>
+    <proof prover="1" obsolete="true"><result status="timeout" time="1.000000"/></proof>
+    <proof prover="2" obsolete="true"><result status="timeout" time="1.000000"/></proof>
+    <transf name="split_vc" >
+     <goal name="delete_snippets_with_only_m&#39;vc.1.1.1.0" expl="postcondition">
+     <proof prover="2" obsolete="true"><result status="valid" time="0.077317" steps="287765"/></proof>
+     </goal>
+     <goal name="delete_snippets_with_only_m&#39;vc.1.1.1.1" expl="postcondition">
+     <proof prover="0" timelimit="30" memlimit="4000" obsolete="true"><result status="timeout" time="30.000000" steps="11172555"/></proof>
+     <proof prover="1" timelimit="30" memlimit="4000" obsolete="true"><result status="timeout" time="30.000000"/></proof>
+     <proof prover="2" timelimit="30" memlimit="4000" obsolete="true"><result status="timeout" time="30.000000"/></proof>
+     </goal>
+    </transf>
+    </goal>
+   </transf>
+   </goal>
+  </transf>
+  </goal>
+  <goal name="delete_snippets_with_only_m&#39;vc.2" expl="postcondition">
+  <proof prover="0" obsolete="true"><result status="valid" time="0.248078" steps="63096"/></proof>
+  </goal>
+  <goal name="delete_snippets_with_only_m&#39;vc.3" expl="postcondition">
+  <proof prover="0" obsolete="true"><result status="timeout" time="1.000000" steps="265695"/></proof>
+  <proof prover="1" obsolete="true"><result status="timeout" time="1.000000"/></proof>
+  <proof prover="2" obsolete="true"><result status="timeout" time="1.000000"/></proof>
+  <transf name="split_vc" >
+   <goal name="delete_snippets_with_only_m&#39;vc.3.0" expl="postcondition">
+   <proof prover="0" obsolete="true"><result status="timeout" time="1.000000" steps="245932"/></proof>
+   <proof prover="1" obsolete="true"><result status="timeout" time="1.000000"/></proof>
+   <proof prover="2" obsolete="true"><result status="timeout" time="1.000000"/></proof>
+   <transf name="split_vc" >
+    <goal name="delete_snippets_with_only_m&#39;vc.3.0.0" expl="postcondition">
+    <proof prover="2" obsolete="true"><result status="valid" time="0.014123" steps="69037"/></proof>
+    </goal>
+    <goal name="delete_snippets_with_only_m&#39;vc.3.0.1" expl="postcondition">
+    <proof prover="0" obsolete="true"><result status="timeout" time="1.000000" steps="206329"/></proof>
+    <proof prover="1" obsolete="true"><result status="timeout" time="1.000000"/></proof>
+    <proof prover="2" obsolete="true"><result status="timeout" time="1.000000"/></proof>
+    <transf name="split_vc" >
+     <goal name="delete_snippets_with_only_m&#39;vc.3.0.1.0" expl="postcondition">
+     <proof prover="0" timelimit="5" memlimit="2000" obsolete="true"><result status="valid" time="1.333482" steps="251702"/></proof>
+     </goal>
+     <goal name="delete_snippets_with_only_m&#39;vc.3.0.1.1" expl="postcondition">
+     <proof prover="2" obsolete="true"><result status="valid" time="0.018235" steps="77952"/></proof>
+     </goal>
+    </transf>
+    </goal>
+   </transf>
+   </goal>
+   <goal name="delete_snippets_with_only_m&#39;vc.3.1" expl="postcondition">
+   <proof prover="0" obsolete="true"><result status="timeout" time="1.000000" steps="264261"/></proof>
+   <proof prover="1" obsolete="true"><result status="timeout" time="1.000000"/></proof>
+   <proof prover="2" obsolete="true"><result status="timeout" time="1.000000"/></proof>
+   <transf name="split_vc" >
+    <goal name="delete_snippets_with_only_m&#39;vc.3.1.0" expl="postcondition">
+    <proof prover="2" obsolete="true"><result status="valid" time="0.018154" steps="69037"/></proof>
+    </goal>
+    <goal name="delete_snippets_with_only_m&#39;vc.3.1.1" expl="postcondition">
+    <proof prover="1" obsolete="true"><result status="valid" time="0.080290" steps="239"/></proof>
+    </goal>
+   </transf>
+   </goal>
+  </transf>
+  </goal>
+ </transf>
+ <transf name="split_vc" >
+  <goal name="delete_snippets_with_only_m&#39;vc.0" expl="precondition" proved="true">
+  <proof prover="2"><result status="valid" time="0.014425" steps="13846"/></proof>
+  </goal>
+  <goal name="delete_snippets_with_only_m&#39;vc.1" expl="precondition">
+  </goal>
+  <goal name="delete_snippets_with_only_m&#39;vc.2" expl="postcondition">
+  <proof prover="0" obsolete="true"><result status="timeout" time="1.000000" steps="249019"/></proof>
+  <proof prover="1" obsolete="true"><result status="timeout" time="1.000000"/></proof>
+  <proof prover="2" obsolete="true"><result status="timeout" time="1.000000"/></proof>
+  <transf name="split_vc" >
+   <goal name="delete_snippets_with_only_m&#39;vc.2.0" expl="postcondition">
+   <proof prover="0" obsolete="true"><result status="timeout" time="1.000000" steps="427095"/></proof>
+   <proof prover="1" obsolete="true"><result status="timeout" time="1.000000"/></proof>
+   <proof prover="2" obsolete="true"><result status="timeout" time="1.000000"/></proof>
+   <transf name="split_vc" >
+    <goal name="delete_snippets_with_only_m&#39;vc.2.0.0" expl="postcondition" proved="true">
+    <proof prover="1"><result status="valid" time="0.026274" steps="15"/></proof>
+    </goal>
+    <goal name="delete_snippets_with_only_m&#39;vc.2.0.1" expl="postcondition">
+    <proof prover="2" obsolete="true"><result status="valid" time="0.478044" steps="1318548"/></proof>
+    </goal>
+   </transf>
+   </goal>
+   <goal name="delete_snippets_with_only_m&#39;vc.2.1" expl="postcondition">
+   <proof prover="0" obsolete="true"><result status="timeout" time="1.000000" steps="369826"/></proof>
+   <proof prover="1" obsolete="true"><result status="timeout" time="1.000000"/></proof>
+   <proof prover="2" obsolete="true"><result status="timeout" time="1.000000"/></proof>
+   <transf name="split_vc" >
+    <goal name="delete_snippets_with_only_m&#39;vc.2.1.0" expl="postcondition" proved="true">
+    <proof prover="1"><result status="valid" time="0.045823" steps="87"/></proof>
+    </goal>
+    <goal name="delete_snippets_with_only_m&#39;vc.2.1.1" expl="postcondition">
+    <proof prover="1" obsolete="true"><result status="valid" time="0.089756" steps="338"/></proof>
+    </goal>
+   </transf>
+   </goal>
+  </transf>
+  </goal>
+  <goal name="delete_snippets_with_only_m&#39;vc.3" expl="postcondition">
+  <proof prover="0" obsolete="true"><result status="valid" time="0.209542" steps="63085"/></proof>
+  </goal>
+  <goal name="delete_snippets_with_only_m&#39;vc.4" expl="postcondition">
+  <proof prover="0" obsolete="true"><result status="timeout" time="1.000000" steps="264766"/></proof>
+  <proof prover="1" obsolete="true"><result status="timeout" time="1.000000"/></proof>
+  <proof prover="2" obsolete="true"><result status="timeout" time="1.000000"/></proof>
+  <transf name="split_vc" >
+   <goal name="delete_snippets_with_only_m&#39;vc.4.0" expl="postcondition">
+   <proof prover="0" obsolete="true"><result status="timeout" time="1.000000" steps="244981"/></proof>
+   <proof prover="1" obsolete="true"><result status="timeout" time="1.000000"/></proof>
+   <proof prover="2" obsolete="true"><result status="timeout" time="1.000000"/></proof>
+   <transf name="split_vc" >
+    <goal name="delete_snippets_with_only_m&#39;vc.4.0.0" expl="postcondition" proved="true">
+    <proof prover="2"><result status="valid" time="0.014655" steps="69037"/></proof>
+    </goal>
+    <goal name="delete_snippets_with_only_m&#39;vc.4.0.1" expl="postcondition">
+    <proof prover="0" obsolete="true"><result status="timeout" time="1.000000" steps="213764"/></proof>
+    <proof prover="1" obsolete="true"><result status="timeout" time="1.000000"/></proof>
+    <proof prover="2" obsolete="true"><result status="timeout" time="1.000000"/></proof>
+    <transf name="split_vc" >
+     <goal name="delete_snippets_with_only_m&#39;vc.4.0.1.0" expl="postcondition">
+     <proof prover="0" timelimit="5" memlimit="2000" obsolete="true"><result status="valid" time="1.061598" steps="251702"/></proof>
+     </goal>
+     <goal name="delete_snippets_with_only_m&#39;vc.4.0.1.1" expl="postcondition" proved="true">
+     <proof prover="2"><result status="valid" time="0.019758" steps="137525"/></proof>
+     </goal>
+    </transf>
+    </goal>
+   </transf>
+   </goal>
+   <goal name="delete_snippets_with_only_m&#39;vc.4.1" expl="postcondition">
+   <proof prover="0" obsolete="true"><result status="timeout" time="1.000000" steps="264248"/></proof>
+   <proof prover="1" obsolete="true"><result status="timeout" time="1.000000"/></proof>
+   <proof prover="2" obsolete="true"><result status="timeout" time="1.000000"/></proof>
+   <transf name="split_vc" >
+    <goal name="delete_snippets_with_only_m&#39;vc.4.1.0" expl="postcondition" proved="true">
+    <proof prover="2"><result status="valid" time="0.012052" steps="69037"/></proof>
+    </goal>
+    <goal name="delete_snippets_with_only_m&#39;vc.4.1.1" expl="postcondition">
+    <proof prover="1" obsolete="true"><result status="valid" time="0.141958" steps="385"/></proof>
+    </goal>
+   </transf>
+   </goal>
+  </transf>
+  </goal>
+ </transf>
+ <transf name="split_vc" proved="true" >
+  <goal name="delete_snippets_with_only_m&#39;vc.0" expl="precondition" proved="true">
+  <proof prover="2"><result status="valid" time="0.013138" steps="13846"/></proof>
+  </goal>
+  <goal name="delete_snippets_with_only_m&#39;vc.1" expl="precondition" proved="true">
+  <proof prover="0"><result status="valid" time="0.399564" steps="89044"/></proof>
+  </goal>
+  <goal name="delete_snippets_with_only_m&#39;vc.2" expl="postcondition" proved="true">
+  <proof prover="0"><result status="timeout" time="1.000000" steps="232109"/></proof>
+  <proof prover="1"><result status="timeout" time="1.000000"/></proof>
+  <proof prover="2"><result status="timeout" time="1.000000"/></proof>
+  <transf name="split_vc" proved="true" >
+   <goal name="delete_snippets_with_only_m&#39;vc.2.0" expl="postcondition" proved="true">
+   <proof prover="0"><result status="timeout" time="1.000000" steps="388467"/></proof>
+   <proof prover="1"><result status="timeout" time="1.000000"/></proof>
+   <proof prover="2"><result status="timeout" time="1.000000"/></proof>
+   <transf name="split_vc" proved="true" >
+    <goal name="delete_snippets_with_only_m&#39;vc.2.0.0" expl="postcondition" proved="true">
+    <proof prover="1"><result status="valid" time="0.028670" steps="15"/></proof>
+    </goal>
+    <goal name="delete_snippets_with_only_m&#39;vc.2.0.1" expl="postcondition" proved="true">
+    <proof prover="0"><result status="valid" time="0.760250" steps="114721"/></proof>
+    </goal>
+   </transf>
+   </goal>
+   <goal name="delete_snippets_with_only_m&#39;vc.2.1" expl="postcondition" proved="true">
+   <proof prover="0"><result status="timeout" time="1.000000" steps="336013"/></proof>
+   <proof prover="1"><result status="timeout" time="1.000000"/></proof>
+   <proof prover="2"><result status="timeout" time="1.000000"/></proof>
+   <transf name="split_vc" proved="true" >
+    <goal name="delete_snippets_with_only_m&#39;vc.2.1.0" expl="postcondition" proved="true">
+    <proof prover="1"><result status="valid" time="0.040634" steps="87"/></proof>
+    </goal>
+    <goal name="delete_snippets_with_only_m&#39;vc.2.1.1" expl="postcondition" proved="true">
+    <proof prover="1"><result status="valid" time="0.331241" steps="1111"/></proof>
+    </goal>
+   </transf>
+   </goal>
+  </transf>
+  </goal>
+  <goal name="delete_snippets_with_only_m&#39;vc.3" expl="postcondition" proved="true">
+  <proof prover="0"><result status="valid" time="0.208319" steps="60482"/></proof>
+  </goal>
+  <goal name="delete_snippets_with_only_m&#39;vc.4" expl="postcondition" proved="true">
+  <proof prover="0"><result status="timeout" time="1.000000" steps="232297"/></proof>
+  <proof prover="1"><result status="timeout" time="1.000000"/></proof>
+  <proof prover="2"><result status="timeout" time="1.000000"/></proof>
+  <transf name="split_vc" proved="true" >
+   <goal name="delete_snippets_with_only_m&#39;vc.4.0" expl="postcondition" proved="true">
+   <proof prover="0"><result status="valid" time="0.878576" steps="217525"/></proof>
+   </goal>
+   <goal name="delete_snippets_with_only_m&#39;vc.4.1" expl="postcondition" proved="true">
+   <proof prover="0"><result status="timeout" time="1.000000" steps="231442"/></proof>
+   <proof prover="1"><result status="timeout" time="1.000000"/></proof>
+   <proof prover="2"><result status="timeout" time="1.000000"/></proof>
+   <transf name="split_vc" proved="true" >
+    <goal name="delete_snippets_with_only_m&#39;vc.4.1.0" expl="postcondition" proved="true">
+    <proof prover="2"><result status="valid" time="0.012949" steps="69037"/></proof>
+    </goal>
+    <goal name="delete_snippets_with_only_m&#39;vc.4.1.1" expl="postcondition" proved="true">
+    <proof prover="1"><result status="valid" time="0.169240" steps="592"/></proof>
+    </goal>
+   </transf>
+   </goal>
+  </transf>
+  </goal>
+ </transf>
+ </goal>
+ <goal name="delete_metadata&#39;vc" expl="VC for delete_metadata" proved="true">
+ <proof prover="0"><result status="valid" time="0.369340" steps="105397"/></proof>
  </goal>
 </theory>
 </file>

@@ -449,6 +449,83 @@ def _handle_delete_snippet(graph: MSMDiGraph):
     except Exception as e:
         print_error(f"Error during deletion: {e}")
 
+def _handle_delete_metadata(graph: MSMDiGraph):
+    """Delete metadata and all snippets that only have this metadata"""
+    print_header("Delete Metadata")
+    print_warning("This action cannot be undone!")
+    print_warning("Snippets that have ONLY this metadata will also be deleted!")
+    
+    try:
+        name = input_prompt("Metadata name to delete").strip()
+        if not name:
+            print_warning("Operation cancelled. Name cannot be empty.")
+            return
+        
+        category = _prompt_category()
+        
+        metadata = Metadata(name=name, category=category)
+        m_key = f"{metadata.name}-{metadata.category.value}"
+        
+        # Check if metadata exists
+        if not graph.is_metadata(m_key):
+            print_error(f"Metadata '{name}' with category '{category.value}' not found.")
+            return
+        
+        # Get snippets that will be affected
+        snippets = graph._get_snippets_from_metadata(metadata)
+        
+        print(f"\n{Colors.BOLD}{Colors.YELLOW}Metadata to delete:{Colors.RESET}")
+        print(f"{Colors.CYAN}Name:{Colors.RESET}       {metadata.name}")
+        print(f"{Colors.CYAN}Category:{Colors.RESET}   {metadata.category.value}")
+
+        snippets_to_delete = []
+        snippets_to_keep = []
+
+        if snippets:
+            print(f"\n{Colors.CYAN}Linked to {len(snippets)} snippet(s):{Colors.RESET}")
+                        
+            for snippet_key in snippets:
+                try:
+                    snippet, _ = graph.get_snippet(snippet_key)
+                    # Check if this snippet has only this metadata
+                    num_metadata = graph._snippet_metadata_outdegree(snippet_key)
+                    if num_metadata == 1:
+                        snippets_to_delete.append(snippet.name)
+                    else:
+                        snippets_to_keep.append(snippet.name)
+                except:
+                    pass
+            
+            if snippets_to_delete:
+                print(f"\n  {Colors.RED}Will be DELETED (only have this metadata):{Colors.RESET}")
+                for sn in snippets_to_delete:
+                    print(f"    {Colors.RED}✗{Colors.RESET} {sn}")
+            
+            if snippets_to_keep:
+                print(f"\n  {Colors.GREEN}Will be KEPT (have other metadata too):{Colors.RESET}")
+                for sn in snippets_to_keep:
+                    print(f"    {Colors.GREEN}✓{Colors.RESET} {sn}")
+        else:
+            print(f"\n{Colors.DIM}(No snippets linked to this metadata){Colors.RESET}")
+        
+        # Confirmation prompt
+        print()
+        confirm = input_prompt(
+            f"Are you sure you want to delete metadata '{Colors.BOLD}{name}{Colors.RESET}'? (yes/no)", 
+            Colors.RED
+        ).lower().strip()
+        
+        if confirm == 'yes':
+            graph.delete_metadata(metadata)
+            print_success(f"Metadata '{Colors.BOLD}{name}{Colors.RESET}' deleted successfully!")
+            if snippets_to_delete:
+                print_success(f"Also deleted {len(snippets_to_delete)} snippet(s) that only had this metadata")
+        else:
+            print_info("Deletion cancelled.")
+            
+    except (ValidationError, KeyError, ValueError) as e:
+        print_error(f"Error during deletion: {e}")
+
 def _handle_exit(graph: MSMDiGraph):
     """Exit the program"""
     print_success("Goodbye! 👋")
@@ -493,6 +570,11 @@ MENU_ITEMS = [
     {
         "name": "Delete a snippet",
         "handler": _handle_delete_snippet,
+        "icon": "🗑️"
+    },
+    {
+        "name": "Delete a metadata",
+        "handler": _handle_delete_metadata,
         "icon": "🗑️"
     },
     {

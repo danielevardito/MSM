@@ -229,3 +229,32 @@ class MSMDiGraph(ValidatedArangoGraph):
         if not self.is_snippet(snippet_name):
             raise ValueError(f"Snippet {snippet_name} not found")
         self.deletev(snippet_name)
+
+    def _snippet_metadata_outdegree(self, s_key: str) -> int:
+        if not self.is_snippet(s_key):
+            raise ValueError(f"Snippet {s_key} not found")
+        
+        return len(self.successors(s_key))
+
+    def _only_metadata_of_snippet(self, m_key: str, s_key: str) -> bool:
+        if self.is_metadata(m_key) and self.is_snippet(s_key):
+            return self._snippet_metadata_outdegree(s_key) == 1 and self.meme(s_key, m_key)
+
+    def _delete_snippets_with_only_m(self, m_key: str, s_keys: List[str]):
+        match s_keys:
+            case []: return
+            case [s_key, *r]:
+                if self._only_metadata_of_snippet(m_key, s_key):
+                    self.delete_snippet(s_key)
+                    self._delete_snippets_with_only_m(m_key, r)
+                else: 
+                    self._delete_snippets_with_only_m(m_key, r)
+
+    def delete_metadata(self, m: Metadata):
+        m_key = self._format_metdata(m)
+        if not self.is_metadata(m_key):
+            raise ValueError(f"Metadata {m_key} doesn't exist")
+        
+        snippets = self._get_snippets_from_metadata(m)
+        self._delete_snippets_with_only_m(m_key, list(snippets))
+        self.deletev(m_key)

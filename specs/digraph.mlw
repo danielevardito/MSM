@@ -14,11 +14,11 @@ theory DiGraph
 
   type graph = { vertices: fset v; edges: fset e }
 
-  predicate memv (v: v) (g: graph) =
-    mem v g.vertices
+  val function memv (v: v) (g: graph) : bool 
+    ensures { result =  mem v g.vertices }
 
-  predicate meme (e: e) (g: graph) =
-    mem e g.edges
+  val function meme (e: e) (g: graph) : bool 
+    ensures { result = mem e g.edges }
 
   predicate edgep (g: graph) (v1 v2: v) =
     exists e: e. meme e g /\ src e = v1  /\ dst e = v2

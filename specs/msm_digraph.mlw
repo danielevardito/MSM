@@ -233,10 +233,47 @@ module MSMDiGraph
 
   let function delete_snippet (s: v) (g: graph) : graph
     requires  { is_snippet s /\ memv s g }
-    ensures   { not (memv s result) }
     ensures   { forall x: v. x <> s -> memv x g <-> memv x result }
-    ensures   { result.edges = Fset.diff g.edges (edgesv_set s g) }
+    ensures   { forall m: v. not (meme (s,m) result) }
+    ensures   { forall m x: v. is_snippet x -> x <> s -> (meme (x,m) g <-> meme (x,m) result) }
   = deletev s g
-   
 
+  lemma snippet_not_mem:
+    forall s: v, g1 g2: graph. is_snippet s /\ memv s g1 /\ g2 = delete_snippet s g1 -> not (memv s g2)
+
+  let function only_metadata_of_snippet (m s: v) (g: graph) : bool 
+    ensures { result = is_metadata m /\ is_snippet s /\ memv m g /\ memv s g -> snippet_metadata_outdegree s g = 1 /\ meme (s,m) g }
+  = if is_metadata m && is_snippet s && memv m g && memv s g then 
+      (snippet_metadata_outdegree s g = 1 && meme (s,m) g)
+    else true 
+
+  lemma no_edges_deletev:
+    forall m s: v, g1 g2: graph.  
+      is_snippet s /\ is_metadata m /\ 
+      memv m g1 /\ memv s g1 /\
+      meme (s,m) g1 /\ g2 = deletev s g1
+        -> not (memv s g2) /\ not (meme (s,m) g2)
+
+  let rec function delete_snippets_with_only_m (m: v) (snippets: list v) (g: graph) : graph
+    requires  { is_metadata m /\ memv m g }
+    ensures   { forall s: v. LM.mem s snippets /\ only_metadata_of_snippet m s g -> not (memv s result) /\ not (meme (s,m) result) }
+    ensures   { forall s: v. LM.mem s snippets /\ not (only_metadata_of_snippet m s g) -> memv s result }
+    ensures   { forall x: v. is_metadata x -> memv x g <-> memv x result }
+  = match snippets with
+    | Nil -> g
+    | Cons s r -> 
+        let rec_g = delete_snippets_with_only_m m r g in
+        if only_metadata_of_snippet m s g then delete_snippet s (rec_g) else rec_g 
+    end
+
+  let function delete_metadata (m: v) (g: graph) : graph
+    requires  { is_metadata m /\ memv m g }
+    ensures   { not (memv m result )}
+    ensures   { forall s: v. only_metadata_of_snippet m s g -> not (memv s result) /\ not (meme (s,m) result) }
+    ensures   { forall s: v. not (only_metadata_of_snippet m s g) -> memv s result }
+    ensures   { forall x: v. is_metadata x -> x <> m -> memv x g <-> memv x result }
+  = let snippets = get_snippets_from_metadata m g in
+    let g_no_snippets = delete_snippets_with_only_m m (fset_to_list snippets) g in
+    deletev m g_no_snippets
+  
 end
