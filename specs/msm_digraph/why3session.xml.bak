@@ -201,16 +201,10 @@
    <proof prover="0"><result status="valid" time="0.826276" steps="226773"/></proof>
    </goal>
    <goal name="get_all_snippets&#39;vc.1.1" expl="postcondition">
-   <proof prover="0" timelimit="5" memlimit="2000" obsolete="true"><result status="timeout" time="5.000000" steps="2303921"/></proof>
-   <proof prover="1" timelimit="5" memlimit="2000" obsolete="true"><result status="timeout" time="5.000000"/></proof>
-   <proof prover="2" timelimit="5" memlimit="2000" obsolete="true"><result status="timeout" time="5.000000"/></proof>
    <transf name="inline_goal" >
     <goal name="get_all_snippets&#39;vc.1.1.0" expl="postcondition">
     <transf name="split_all_full" >
      <goal name="get_all_snippets&#39;vc.1.1.0.0" expl="VC for get_all_snippets">
-     <proof prover="0" obsolete="true"><result status="timeout" time="1.000000" steps="449235"/></proof>
-     <proof prover="1" obsolete="true"><result status="timeout" time="1.000000"/></proof>
-     <proof prover="2" obsolete="true"><result status="timeout" time="1.000000"/></proof>
      <transf name="split_vc" >
       <goal name="get_all_snippets&#39;vc.1.1.0.0.0" expl="VC for get_all_snippets">
       <proof prover="0" timelimit="30" memlimit="4000"><undone/></proof>
@@ -255,8 +249,23 @@
   </goal>
  </transf>
  </goal>
- <goal name="get_all_snippets_from_metadata&#39;vc" expl="VC for get_all_snippets_from_metadata" proved="true">
- <proof prover="1"><result status="valid" time="0.600438" steps="1544"/></proof>
+ <goal name="get_snippets_from_metadata&#39;vc" expl="VC for get_snippets_from_metadata" proved="true">
+ <proof prover="1"><result status="valid" time="0.600438" steps="1341"/></proof>
+ </goal>
+ <goal name="get_snippets_union&#39;vc" expl="VC for get_snippets_union" proved="true">
+ <proof prover="1"><result status="valid" time="0.032665" steps="123"/></proof>
+ </goal>
+ <goal name="get_snippets_union_list&#39;vc" expl="VC for get_snippets_union_list" proved="true">
+ <proof prover="2"><result status="valid" time="0.005958" steps="9102"/></proof>
+ </goal>
+ <goal name="get_snippets_intersection&#39;vc" expl="VC for get_snippets_intersection" proved="true">
+ <proof prover="1"><result status="valid" time="0.030612" steps="221"/></proof>
+ </goal>
+ <goal name="get_snippets_intersection_list&#39;vc" expl="VC for get_snippets_intersection_list" proved="true">
+ <proof prover="2"><result status="valid" time="0.007167" steps="9162"/></proof>
+ </goal>
+ <goal name="delete_snippet&#39;vc" expl="VC for delete_snippet" proved="true">
+ <proof prover="2"><result status="valid" time="0.445878" steps="1349039"/></proof>
  </goal>
 </theory>
 </file>

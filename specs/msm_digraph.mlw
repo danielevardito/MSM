@@ -231,4 +231,12 @@ module MSMDiGraph
     requires  { forall m: v. LM.mem m metadata_list -> is_metadata m }
   = fset_to_list (get_snippets_intersection metadata_list g)
 
+  let function delete_snippet (s: v) (g: graph) : graph
+    requires  { is_snippet s /\ memv s g }
+    ensures   { not (memv s result) }
+    ensures   { forall x: v. x <> s -> memv x g <-> memv x result }
+    ensures   { result.edges = Fset.diff g.edges (edgesv_set s g) }
+  = deletev s g
+   
+
 end

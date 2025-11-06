@@ -264,6 +264,9 @@
  <goal name="get_snippets_intersection_list&#39;vc" expl="VC for get_snippets_intersection_list" proved="true">
  <proof prover="2"><result status="valid" time="0.007167" steps="9162"/></proof>
  </goal>
+ <goal name="delete_snippet&#39;vc" expl="VC for delete_snippet" proved="true">
+ <proof prover="2"><result status="valid" time="0.445878" steps="1349039"/></proof>
+ </goal>
 </theory>
 </file>
 </why3session>

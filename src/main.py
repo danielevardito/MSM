@@ -403,6 +403,52 @@ def _handle_get_snippets_intersection(graph: MSMDiGraph):
     except Exception as e:
         print_error(f"Error retrieving snippets: {e}")
 
+def _handle_delete_snippet(graph: MSMDiGraph):
+    """Delete a snippet"""
+    print_header("Delete Snippet")
+    print_warning("This action cannot be undone!")
+    
+    try:
+        name = input_prompt("Snippet name to delete (e.g., my_code.py)").strip()
+        if not name:
+            print_warning("Operation cancelled. Name cannot be empty.")
+            return
+        
+        # First, try to get the snippet to show what will be deleted
+        try:
+            snippet, metadata_list = graph.get_snippet(name)
+            
+            print(f"\n{Colors.BOLD}{Colors.YELLOW}Snippet to delete:{Colors.RESET}")
+            print(f"{Colors.CYAN}Name:{Colors.RESET}       {snippet.name}")
+            print(f"{Colors.CYAN}Extension:{Colors.RESET}  {snippet.extension}")
+            print(f"{Colors.CYAN}Created:{Colors.RESET}    {snippet.created_at}")
+            
+            print(f"\n{Colors.CYAN}Linked Metadata:{Colors.RESET}")
+            if metadata_list:
+                for meta in metadata_list:
+                    print(f"  {Colors.YELLOW}•{Colors.RESET} {meta.name} {Colors.DIM}({meta.category.value}){Colors.RESET}")
+            else:
+                print(f"  {Colors.DIM}(None){Colors.RESET}")
+            
+            # Confirmation prompt
+            print()
+            confirm = input_prompt(
+                f"Are you sure you want to delete '{Colors.BOLD}{name}{Colors.RESET}'? (yes/no)", 
+                Colors.RED
+            ).lower().strip()
+            
+            if confirm == 'yes':
+                graph.delete_snippet(name)
+                print_success(f"Snippet '{Colors.BOLD}{name}{Colors.RESET}' deleted successfully!")
+            else:
+                print_info("Deletion cancelled.")
+                
+        except (KeyError, ValueError) as e:
+            print_error(f"Snippet '{name}' not found: {e}")
+            
+    except Exception as e:
+        print_error(f"Error during deletion: {e}")
+
 def _handle_exit(graph: MSMDiGraph):
     """Exit the program"""
     print_success("Goodbye! 👋")
@@ -443,6 +489,11 @@ MENU_ITEMS = [
         "name": "Get snippets by metadata (INTERSECTION - all)",
         "handler": _handle_get_snippets_intersection,
         "icon": "∩"
+    },
+    {
+        "name": "Delete a snippet",
+        "handler": _handle_delete_snippet,
+        "icon": "🗑️"
     },
     {
         "name": "Exit",

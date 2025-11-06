@@ -224,3 +224,8 @@ class MSMDiGraph(ValidatedArangoGraph):
     def get_snippets_intersection(self, metadata_list: List[Metadata]) -> List[Tuple[Snippet, List[Metadata]]]:
         snippet_keys = list(self._get_snippets_intersection_set(metadata_list))
         return self._get_snippets_with_metadata_from_list(snippet_keys)
+
+    def delete_snippet(self, snippet_name: str):
+        if not self.is_snippet(snippet_name):
+            raise ValueError(f"Snippet {snippet_name} not found")
+        self.deletev(snippet_name)
