@@ -4,6 +4,7 @@ from typing import List, Tuple, Set
 from datetime import datetime
 from digraph import ValidatedArangoGraph
 import os
+import networkx as nx
 
 class Category(str, Enum):
     """Metadata category types (not in why3 specs)."""
@@ -258,3 +259,72 @@ class MSMDiGraph(ValidatedArangoGraph):
         snippets = self._get_snippets_from_metadata(m)
         self._delete_snippets_with_only_m(m_key, list(snippets))
         self.deletev(m_key)
+
+    def _metadata_indegree(self, node_key: str) -> int:
+        if not self.is_metadata(node_key):
+            raise ValueError(f"Node {node_key} is not metadata")
+
+        count = 0
+        for pred in self.predecessors(node_key):
+            if self.is_metadata(pred):
+                count += 1
+        return count
+
+    def _filter_metadata_parents(self, m_list: List[str]) -> List[str]:
+        match m_list:
+            case []: return []
+            case [m, *r]:
+                if self.is_metadata(m) and self._metadata_indegree(m) == 0:
+                    return [m] + self._filter_metadata_parents(r)
+                else:
+                    return self._filter_metadata_parents(r)
+
+    def get_all_roots(self) -> List[str]:
+        return self._filter_metadata_parents(self.vertices_list())
+
+    def _filter_metadata_from_list(self, l: List[str]) -> List[str]:
+        match l:
+            case []: return []
+            case [x, *r]:
+                if self.is_metadata(x):
+                    return [x] + self._filter_metadata_from_list(r)
+                else:
+                    return self._filter_metadata_from_list(r)
+
+    def _collect_reachable_metadata(self, worklist: List[str], visited: Set[str]) -> Set[str]:
+        match worklist:
+            case []:
+                return visited
+            case [current, *rest]:
+                succ_list = self.successors(current)
+                metadata_succ = self._filter_metadata_from_list(succ_list)
+
+                visited_new = visited.copy()
+                for m in metadata_succ:
+                    visited_new.add(m)
+
+                worklist_new = rest.copy()
+                for m in metadata_succ:
+                    if m not in visited:
+                        worklist_new.append(m)
+                
+                return self._collect_reachable_metadata(worklist_new, visited_new)
+
+    def get_metadata_tree(self, metadata_key: str) -> nx.DiGraph:
+        if not self.is_metadata(metadata_key):
+            raise ValueError(f"Node {metadata_key} is not metadata")
+
+        reachable = self._collect_reachable_metadata([metadata_key], {metadata_key})
+        tree = nx.DiGraph()
+
+        for node_key in reachable:
+            node_data = self.get_node(node_key)
+            tree.add_node(node_key, **node_data)
+
+        for src_key in reachable:
+            for dst_key in self.successors(src_key):
+                if dst_key in reachable:
+                    edge_label = self.getelabel(src_key, dst_key)
+                    tree.add_edge(src_key, dst_key, label=edge_label)
+
+        return tree

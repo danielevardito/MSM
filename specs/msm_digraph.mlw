@@ -358,16 +358,6 @@ module MSMDiGraph
         if is_metadata x then Cons x (filter_metadata_from_list r) else filter_metadata_from_list r
     end
 
-  let rec ghost function filter_unvisited (l: list v) (visited: fset v) : list v
-    ensures { forall m: v. LM.mem m result <-> LM.mem m l /\ not (mem m visited) }
-  = match l with
-    | Nil -> Nil
-    | Cons x r ->
-        if mem x visited
-        then filter_unvisited r visited
-        else Cons x (filter_unvisited r visited)
-    end
-
   let rec ghost function collect_reachable_metadata (worklist: list v) (visited: fset v) (g: graph) : fset v
   requires  { forall m: v. LM.mem m worklist -> is_metadata m /\ memv m g }
   requires  { forall m: v. mem m visited -> is_metadata m /\ memv m g }
@@ -391,6 +381,10 @@ module MSMDiGraph
       assert { is_nil metadata_succ -> length worklist' < length worklist };
       assert { not (is_nil metadata_succ) -> cardinal visited' > cardinal visited };
       assert { cardinal g.vertices - cardinal visited' < cardinal g.vertices - cardinal visited };
+      assert { 
+        cardinal g.vertices - cardinal visited' < cardinal g.vertices - cardinal visited /\
+        length worklist' < length worklist 
+      };
       collect_reachable_metadata worklist' visited' g
   end
 

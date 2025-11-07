@@ -6,6 +6,7 @@ import nx_arangodb as nxadb
 from dotenv import load_dotenv
 from pydantic import ValidationError
 from arango.exceptions import ServerConnectionError
+import networkx as nx
 
 from msm_digraph import MSMDiGraph, Metadata, Snippet, Category
 
@@ -221,6 +222,59 @@ def _display_and_interact_with_snippets(
     if _display_snippets_summary(snippets_list):
         _interact_with_snippet_list(graph)
 
+def _print_tree_recursive(tree: nx.DiGraph, node: str, graph: MSMDiGraph, visited: set, prefix: str = "", is_last: bool = True):
+    """Recursively print metadata tree structure"""
+    if node in visited:
+        return
+    visited.add(node)
+    
+    # Parse metadata to get name and category
+    try:
+        metadata = graph._parse_metadata(node)
+        node_display = f"{metadata.name} {Colors.DIM}({metadata.category.value}){Colors.RESET}"
+    except:
+        node_display = node
+    
+    # Print current node
+    connector = "└── " if is_last else "├── "
+    print(f"{prefix}{connector}{Colors.GREEN}{node_display}{Colors.RESET}")
+    
+    # Get children (successors in the tree)
+    children = list(tree.successors(node))
+    
+    # Print children
+    for i, child in enumerate(children):
+        is_last_child = (i == len(children) - 1)
+        extension = "    " if is_last else "│   "
+        _print_tree_recursive(tree, child, graph, visited, prefix + extension, is_last_child)
+
+def _display_metadata_tree(tree: nx.DiGraph, root_key: str, graph: MSMDiGraph):
+    """Display metadata tree in a nice hierarchical format"""
+    print(f"\n{Colors.BOLD}{Colors.CYAN}Metadata Tree Structure:{Colors.RESET}\n")
+    
+    # Parse root metadata
+    try:
+        root_metadata = graph._parse_metadata(root_key)
+        root_display = f"{root_metadata.name} {Colors.DIM}({root_metadata.category.value}){Colors.RESET}"
+    except:
+        root_display = root_key
+    
+    print(f"{Colors.BOLD}{Colors.YELLOW}🌳 {root_display}{Colors.RESET} {Colors.DIM}(ROOT){Colors.RESET}")
+    
+    # Get direct children of root
+    children = list(tree.successors(root_key))
+    visited = {root_key}
+    
+    for i, child in enumerate(children):
+        is_last = (i == len(children) - 1)
+        _print_tree_recursive(tree, child, graph, visited, "", is_last)
+    
+    # Print statistics
+    print(f"\n{Colors.CYAN}Tree Statistics:{Colors.RESET}")
+    print(f"  {Colors.CYAN}Total nodes:{Colors.RESET}  {tree.number_of_nodes()}")
+    print(f"  {Colors.CYAN}Total edges:{Colors.RESET}  {tree.number_of_edges()}")
+    print(f"  {Colors.CYAN}Tree depth:{Colors.RESET}  {nx.dag_longest_path_length(tree) if tree.number_of_nodes() > 0 else 0}")
+
 def _handle_add_free_metadata(graph: MSMDiGraph):
     """Add metadata without parent"""
     print_header("Add Metadata (without parent)")
@@ -260,6 +314,111 @@ def _handle_add_metadata(graph: MSMDiGraph):
     except (ValidationError, KeyError, ValueError) as e:
         print_error(f"Error during creation: {e}")
         print_info("Make sure parent metadata already exists")
+
+def _handle_add_metadata_tree(graph: MSMDiGraph):
+    """Add a metadata tree using BFS"""
+    print_header("Add Metadata Tree (BFS)")
+    try:
+        category = _prompt_category()
+        root_name = input_prompt("Root metadata name").strip()
+        if not root_name:
+            print_warning("Operation cancelled. Name cannot be empty.")
+            return
+
+        try:
+            root_metadata = Metadata(name=root_name, category=category)
+            root_key = graph.insert_freemetadata(root_metadata)
+            print_success(f"Root metadata '{root_name}' created.")
+        except (KeyError, ValueError, ValidationError) as e:
+            print_error(f"Error creating root: {e}")
+            print_info("Maybe the root metadata already exists? Try viewing the tree.")
+            return
+        
+        queue = [root_metadata] # Use list as a queue (FIFO)
+        
+        while queue:
+            parent_metadata = queue.pop(0) # Get next parent
+            
+            children_str = input_prompt(
+                f"Enter children for '{Colors.BOLD}{parent_metadata.name}{Colors.RESET}' (comma-separated, or Enter to skip)",
+                Colors.GREEN
+            ).strip()
+
+            if not children_str:
+                continue
+
+            child_names_raw = [n.strip() for n in children_str.split(",") if n.strip()]
+            if not child_names_raw:
+                continue
+            
+            # Use a retry loop for the current parent's children
+            while True: 
+                child_names = [n.strip() for n in children_str.split(",") if n.strip()]
+                
+                # De-duplicate names entered by user for this batch
+                unique_child_names = list(dict.fromkeys(child_names)) # Preserves order
+                if len(unique_child_names) != len(child_names):
+                    print_warning(f"Duplicate names found in list, using unique: {', '.join(unique_child_names)}")
+                    child_names = unique_child_names
+
+                if not child_names:
+                    break # No valid names entered after parsing
+
+                child_metadata_list = [Metadata(name=n, category=category) for n in child_names]
+                
+                # Check for existing metadata
+                existing_children = []
+                for child_m in child_metadata_list:
+                    if graph.is_metadata(graph._format_metdata(child_m)):
+                        existing_children.append(child_m.name)
+                
+                if existing_children:
+                    print_error(f"Error: The following metadata already exist: {Colors.BOLD}{', '.join(existing_children)}{Colors.RESET}")
+                    print_info("None of the children for this parent were added.")
+                    
+                    retry_children_str = input_prompt(
+                        f"Re-enter children for '{parent_metadata.name}' (or press Enter to skip this parent)"
+                    ).strip()
+                    
+                    if not retry_children_str:
+                        break # Break from retry loop, move to next parent in queue
+                    else:
+                        children_str = retry_children_str
+                        continue # Continue to top of retry loop
+                
+                # All checks passed, insert them
+                inserted_children_metadata = []
+                try:
+                    for child_m in child_metadata_list:
+                        graph.insert_metadata(child_m, parent_metadata, category)
+                        inserted_children_metadata.append(child_m)
+                    
+                    if inserted_children_metadata:
+                        inserted_names = [m.name for m in inserted_children_metadata]
+                        print_success(f"Added children for '{parent_metadata.name}': {', '.join(inserted_names)}")
+                        queue.extend(inserted_children_metadata) # Add new children to queue for BFS
+                    
+                    break # Success, break from retry loop
+
+                except (ValidationError, KeyError, ValueError) as e:
+                    # This should be caught by the pre-check, but as a failsafe:
+                    print_error(f"Error during batch insertion: {e}")
+                    print_info("Aborting insertion for this parent's children.")
+                    break # Break from retry loop
+
+        print_info(f"\nMetadata tree insertion complete for root '{root_name}'.")
+        print_info("Displaying the new tree...")
+        
+        # Display the tree
+        tree = graph.get_metadata_tree(root_key)
+        _display_metadata_tree(tree, root_key, graph)
+    
+    except (ValidationError, KeyError, ValueError) as e:
+        print_error(f"Error adding metadata tree: {e}")
+    except Exception as e:
+        print_error(f"An unexpected error occurred: {e}")
+        import traceback
+        traceback.print_exc()
 
 def _handle_add_snippet(graph: MSMDiGraph):
     """Add snippet"""
@@ -403,6 +562,91 @@ def _handle_get_snippets_intersection(graph: MSMDiGraph):
     except Exception as e:
         print_error(f"Error retrieving snippets: {e}")
 
+def _handle_get_all_roots(graph: MSMDiGraph):
+    """Get all root metadata (metadata without parents)"""
+    print_header("All Root Metadata")
+    
+    try:
+        roots = graph.get_all_roots()
+        
+        if not roots:
+            print_warning("No root metadata found.")
+            return
+        
+        print(f"{Colors.BOLD}Found {len(roots)} root metadata:{Colors.RESET}\n")
+        
+        # Group roots by category
+        roots_by_category = {}
+        for root_key in roots:
+            try:
+                metadata = graph._parse_metadata(root_key)
+                cat = metadata.category.value
+                if cat not in roots_by_category:
+                    roots_by_category[cat] = []
+                roots_by_category[cat].append(metadata)
+            except:
+                pass
+        
+        # Display roots grouped by category
+        for category, metadata_list in sorted(roots_by_category.items()):
+            print(f"{Colors.BOLD}{Colors.CYAN}{category.upper()}:{Colors.RESET}")
+            for metadata in metadata_list:
+                print(f"  {Colors.YELLOW}•{Colors.RESET} {Colors.GREEN}{metadata.name}{Colors.RESET}")
+            print()
+        
+        # Offer to view a specific tree
+        print()
+        view_tree = input_prompt("View tree for a specific root? (y/n)", Colors.GREEN).lower().strip()
+        
+        if view_tree == 'y':
+            root_name = input_prompt("Enter root metadata name").strip()
+            if root_name:
+                category = _prompt_category()
+                metadata = Metadata(name=root_name, category=category)
+                metadata_key = f"{metadata.name}-{metadata.category.value}"
+                
+                if graph.is_metadata(metadata_key):
+                    tree = graph.get_metadata_tree(metadata_key)
+                    _display_metadata_tree(tree, metadata_key, graph)
+                else:
+                    print_error(f"Metadata '{root_name}' not found or is not a root")
+    
+    except Exception as e:
+        print_error(f"Error retrieving root metadata: {e}")
+        import traceback
+        traceback.print_exc()
+
+def _handle_get_metadata_tree(graph: MSMDiGraph):
+    """Get and display metadata tree starting from a specific metadata"""
+    print_header("View Metadata Tree")
+    
+    try:
+        name = input_prompt("Metadata name (root of tree)").strip()
+        if not name:
+            print_warning("Operation cancelled. Name cannot be empty.")
+            return
+        
+        category = _prompt_category()
+        
+        metadata = Metadata(name=name, category=category)
+        metadata_key = f"{metadata.name}-{metadata.category.value}"
+        
+        if not graph.is_metadata(metadata_key):
+            print_error(f"Metadata '{name}' with category '{category.value}' not found.")
+            return
+        
+        print_info("Building metadata tree...")
+        tree = graph.get_metadata_tree(metadata_key)
+        
+        _display_metadata_tree(tree, metadata_key, graph)
+        
+    except (ValidationError, KeyError, ValueError) as e:
+        print_error(f"Error retrieving metadata tree: {e}")
+    except Exception as e:
+        print_error(f"Unexpected error: {e}")
+        import traceback
+        traceback.print_exc()
+
 def _handle_delete_snippet(graph: MSMDiGraph):
     """Delete a snippet"""
     print_header("Delete Snippet")
@@ -543,6 +787,11 @@ MENU_ITEMS = [
         "icon": "🔗"
     },
     {
+        "name": "Add metadata tree (BFS)",
+        "handler": _handle_add_metadata_tree,
+        "icon": "🌲"
+    },
+    {
         "name": "Add a snippet",
         "handler": _handle_add_snippet,
         "icon": "📄"
@@ -566,6 +815,16 @@ MENU_ITEMS = [
         "name": "Get snippets by metadata (INTERSECTION - all)",
         "handler": _handle_get_snippets_intersection,
         "icon": "∩"
+    },
+    {
+        "name": "View all root metadata",
+        "handler": _handle_get_all_roots,
+        "icon": "🌱"
+    },
+    {
+        "name": "View metadata tree",
+        "handler": _handle_get_metadata_tree,
+        "icon": "🌳"
     },
     {
         "name": "Delete a snippet",
@@ -611,6 +870,10 @@ def main_loop():
                 print_error(f"'{choice}' is not a valid choice. Please choose 1-{len(MENU_ITEMS)}")
         except ValueError:
             print_error(f"'{choice}' is not a valid number. Please enter a number between 1 and {len(MENU_ITEMS)}")
+        
+        # Add a small pause for readability
+        if choice_num != len(MENU_ITEMS): # Don't pause on exit
+            input_prompt("\nPress Enter to continue...", Colors.DIM)
 
 if __name__ == "__main__":
     main_loop()
