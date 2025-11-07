@@ -39,6 +39,9 @@ theory DiGraph
   function cardinalv (g: graph) : int = cardinal g.vertices 
   function cardinale (g: graph) : int = cardinal g.edges
 
+  val function empty : graph
+    ensures { empty_graph result }
+
   lemma empty_vertices_to_empty_edges:
     forall g: graph. empty_vertices g -> empty_edges g
 

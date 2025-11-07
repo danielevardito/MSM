@@ -63,8 +63,10 @@ module MSMDiGraph
   axiom no_self_loops:
     forall g: graph, e: e. meme e g -> src e <> dst e
   axiom minimum_metadata:
-    forall g: graph, s: v. is_snippet s /\ memv s g -> 
-      exists e: e. meme e g /\ src e = s
+    forall g: graph, s: v. is_snippet s /\ memv s g /\ 
+      (exists m: v. is_metadata m /\ memv m g) -> 
+        exists m: v. is_metadata m /\ meme (s,m) g
+  
   axiom metadata_outdegree_eq: (* secondary axiom, should be lemma *)
     forall g: graph, m: v. memv m g /\ is_metadata m -> metadata_outdegree m g = outdegree m g
 
@@ -96,23 +98,9 @@ module MSMDiGraph
   lemma snippet_metadata_outdegree_le_cardinale:
     forall v: v, g: graph. is_snippet v /\ memv v g
       -> 0 <= snippet_metadata_outdegree v g <= cardinale g
-  
-  lemma snippet_metadata_indegree_le_cardinale:
-    forall v: v, g: graph. is_snippet v /\ memv v g
-      -> 0 <= snippet_metadata_indegree v g <= cardinale g
-
-  axiom metadata_degree: (* should be lemma *)
-    forall g: graph, v: v. memv v g /\ is_metadata v
-      -> degree v g = metadata_indegree v g + snippet_metadata_indegree v g + metadata_outdegree v g
 
   lemma not_metadata_to_snippet:
     forall g: graph, e: e. meme e g -> (is_metadata (src e) -> not (is_snippet (dst e)))
-
-  axiom cardinal_self_loop_zero: (* should be lemma *)
-    forall g: graph. cardinal_self_loop g = 0
-
-  axiom degree_sum_msm: (* should be lemma *)
-    forall g: graph, v: v. degree v g = indegree v g + outdegree v g
 
   let function insert_freemetadata (m: v) (g: graph) : graph
     requires  { is_metadata m }
@@ -143,26 +131,32 @@ module MSMDiGraph
     ensures   { result.vertices = g.vertices }
     ensures   { forall e: e. meme e g -> meme e result }
     ensures   { forall m: v. LM.mem m metadata_list -> meme (s,m) result }
+    ensures   { forall m r. metadata_list = Cons m r -> meme (s,m) result }
+    ensures   { metadata_list = Nil -> (exists m: v. is_metadata m /\ memv m g /\ meme (s,m) result) }
   = match metadata_list with
     | Nil -> g
     | Cons m l ->  
         let g_sm_edge = inserte (s,m) g in
+        assert { g.vertices = g_sm_edge.vertices };
         insert_metadata_list_for_snippet s l g_sm_edge
     end
 
   let function insert_snippet (s: v) (metadata_list: list v) (g: graph) : graph
     requires  { is_snippet s }
     requires  { not (memv s g)}
+    requires  { metadata_list <> Nil } (* MODIFICA: Lista non vuota *)
     requires  { forall m: v. LM.mem m metadata_list -> is_metadata m /\ memv m g }
     ensures   { result.vertices = Fset.add s g.vertices }
     ensures   { forall e: e. meme e g -> meme e result }
     ensures   { forall m: v. LM.mem m metadata_list -> meme (s,m) result }
+    ensures   { snippet_metadata_outdegree s result > 0 }
   = let g_s_inserted = insertv s g in
-    insert_metadata_list_for_snippet s metadata_list g
+    insert_metadata_list_for_snippet s metadata_list g_s_inserted
 
   lemma insert_snippet_cardinal_edges:
     forall g: graph, s: v, metadata_list: list v. 
-      is_snippet s /\ not (memv s g) /\ (forall m: v. LM.mem m metadata_list -> is_metadata m /\ memv m g) ->
+      is_snippet s /\ not (memv s g) /\ metadata_list <> Nil /\ 
+      (forall m: v. LM.mem m metadata_list -> is_metadata m /\ memv m g) ->
         let g_inserted = insert_snippet s metadata_list g in
           cardinale g_inserted = cardinale g + length metadata_list
 
@@ -195,7 +189,7 @@ module MSMDiGraph
 
   let function get_all_snippets (g: graph) : list (v, list v)
     ensures { forall s: v, ml: list v.
-                is_snippet s /\ memv s g /\ ml = get_all_metadata_from_snippet s g <-> LM.mem (s, ml) result }
+                is_snippet s /\ memv s g /\ ml = get_all_metadata_from_snippet s g -> LM.mem (s, ml) result }
   = let all_snippets = filter_snippets_from_vertices (vertices_list g) in
     let all_snippets_with_metadata = get_snippets_with_metadata_from_list all_snippets g in
     all_snippets_with_metadata
@@ -275,5 +269,139 @@ module MSMDiGraph
   = let snippets = get_snippets_from_metadata m g in
     let g_no_snippets = delete_snippets_with_only_m m (fset_to_list snippets) g in
     deletev m g_no_snippets
-  
+
+  predicate is_root (m: v) (g: graph) = forall n: v. is_metadata n /\ memv n g -> not (meme (n,m) g)
+
+  let rec function filter_metadata_parents (m_list: list v) (g: graph) : list v
+    requires  { forall m: v. LM.mem m m_list -> LM.mem m (vertices_list g) }
+    ensures   { forall m: v. LM.mem m result <-> is_root m g /\ LM.mem m m_list } 
+    ensures   { forall m: v. LM.mem m m_list /\ is_metadata m -> LM.mem m result }
+  = match m_list with
+    | Nil -> Nil
+    | Cons m r -> if is_metadata m && (metadata_indegree m g) = 0 
+                    then Cons m (filter_metadata_parents r g)
+                    else (filter_metadata_parents r g)
+    end
+
+  let function get_all_roots (g: graph) : list v 
+    ensures { forall m: v. memv m g /\ is_metadata m /\ is_root m g  <-> LM.mem m result }
+  = filter_metadata_parents (vertices_list g) g
+
+  use list.Append
+
+  inductive metadata_path v (list v) v graph =
+  | Path_empty:
+      forall x: v, g: graph. is_metadata x /\ memv x g -> metadata_path x Nil x g
+  | Path_cons:
+      forall x y z: v, l: list v, g: graph. 
+        is_metadata x /\ is_metadata y /\ is_metadata z /\
+        memv x g /\ memv y g /\ memv z g ->
+        meme (x,y) g -> metadata_path y l z g -> metadata_path x (Cons x l) z g
+
+  lemma path_right_extension:
+    forall x y z: v, l: list v, g: graph. is_metadata x /\ is_metadata y /\ is_metadata z 
+      -> metadata_path x l y g -> meme (y,z) g -> metadata_path x (l ++ Cons y Nil) z g
+
+  lemma metadata_path_right_inversion:
+    forall x z: v, l: list v, g: graph.
+      is_metadata x /\ is_metadata z ->
+      metadata_path x l z g ->
+        (x = z /\ l = Nil)
+    \/ (exists y: v, l': list v.
+          is_metadata y /\
+          metadata_path x l' y g /\ meme (y,z) g /\ l = l' ++ Cons y Nil)
+
+  lemma metadata_path_trans_helper:
+    forall x y z: v, l1 l2_tail: list v, g: graph, y_succ: v.
+      is_metadata x /\ is_metadata y /\ is_metadata z /\ is_metadata y_succ ->
+      metadata_path x l1 y g ->
+      meme (y, y_succ) g ->
+      metadata_path y_succ l2_tail z g ->
+      metadata_path x (l1 ++ (Cons y l2_tail)) z g
+
+  lemma metadata_path_trans:
+    forall x y z: v, l1 l2: list v, g: graph.
+      is_metadata x /\ is_metadata y /\ is_metadata z ->
+      metadata_path x l1 y g -> metadata_path y l2 z g -> metadata_path x (l1 ++ l2) z g
+
+  lemma metadata_empty_path:
+    forall x y: v, g: graph.
+      is_metadata x /\ is_metadata y ->
+      metadata_path x Nil y g -> x = y
+
+  lemma metadata_path_decomposition:
+    forall x y z: v, l1 l2: list v, g: graph.
+      is_metadata x /\ is_metadata y /\ is_metadata z ->
+      metadata_path x (l1 ++ Cons y l2) z g ->
+        metadata_path x l1 y g /\ metadata_path y (Cons y l2) z g 
+
+  let rec function filter_metadata (m_list: list v) (g: graph) : list v
+    requires  { forall m: v. LM.mem m m_list -> LM.mem m (vertices_list g) }
+    ensures   { forall m: v. LM.mem m m_list /\ is_metadata m -> LM.mem m result }
+  = match m_list with
+    | Nil -> Nil
+    | Cons m r -> if is_metadata m
+                    then Cons m (filter_metadata_parents r g)
+                    else (filter_metadata_parents r g)
+    end
+
+  let function all_metadata_list (g: graph) : list v
+    ensures { result = filter_metadata (vertices_list g) g }
+  = filter_metadata (vertices_list g) g
+
+  let rec function filter_metadata_from_list (l: list v) : list v
+    ensures { forall m: v. LM.mem m result <-> LM.mem m l /\ is_metadata m }
+    ensures { forall m: v. LM.mem m result -> is_metadata m }
+  = match l with
+    | Nil -> Nil
+    | Cons x r ->
+        if is_metadata x then Cons x (filter_metadata_from_list r) else filter_metadata_from_list r
+    end
+
+  let rec ghost function filter_unvisited (l: list v) (visited: fset v) : list v
+    ensures { forall m: v. LM.mem m result <-> LM.mem m l /\ not (mem m visited) }
+  = match l with
+    | Nil -> Nil
+    | Cons x r ->
+        if mem x visited
+        then filter_unvisited r visited
+        else Cons x (filter_unvisited r visited)
+    end
+
+  let rec ghost function collect_reachable_metadata (worklist: list v) (visited: fset v) (g: graph) : fset v
+  requires  { forall m: v. LM.mem m worklist -> is_metadata m /\ memv m g }
+  requires  { forall m: v. mem m visited -> is_metadata m /\ memv m g }
+  requires  { forall m: v. LM.mem m worklist -> mem m visited }
+  variant   { cardinal g.vertices - cardinal visited, length worklist }
+  ensures   { forall m: v. mem m result -> is_metadata m /\ memv m g }
+  ensures   { subset visited result }
+  = match worklist with
+  | Nil -> visited
+  | Cons current rest ->
+      let old_card = cardinal visited in
+      let old_vertices_card = cardinal g.vertices in
+      let succ_list = successors_list current g in
+      let metadata_succ = filter_metadata_from_list succ_list in
+      assert { forall n: v. LM.mem n metadata_succ -> memv n g };
+      let visited' = list_to_fset (fset_to_list visited ++ metadata_succ) in
+      assert { cardinal g.vertices = old_vertices_card };
+      assert { subset visited visited' };
+      assert { is_nil metadata_succ \/ cardinal visited' > old_card };
+      let worklist' = rest ++ metadata_succ in
+      assert { is_nil metadata_succ -> length worklist' < length worklist };
+      assert { not (is_nil metadata_succ) -> cardinal visited' > cardinal visited };
+      assert { cardinal g.vertices - cardinal visited' < cardinal g.vertices - cardinal visited };
+      collect_reachable_metadata worklist' visited' g
+  end
+
+  let ghost function get_metadata_tree (m: v) (g: graph) : graph
+    requires  { is_metadata m /\ memv m g }
+    ensures   { memv m result }
+    ensures   { forall n: v. memv n result <-> (exists l: list v. metadata_path m l n g) }
+  = let reachable = collect_reachable_metadata (Cons m Nil) (singleton m) g in
+    let vertices = reachable in
+    let edges = Fset.filter g.edges
+      (fun (e: e) -> let (u, v) = e in mem u reachable && mem v reachable) in
+    { vertices = vertices; edges = edges }
+
 end
