@@ -398,4 +398,18 @@ module MSMDiGraph
       (fun (e: e) -> let (u, v) = e in mem u reachable && mem v reachable) in
     { vertices = vertices; edges = edges }
 
+  let rec ghost function add_metadata_trees_from_list (l: list v) (g: graph) : graph
+    requires  { forall m: v. LM.mem m l ->  is_metadata m /\ memv m g }
+    ensures   { forall m: v. LM.mem m l -> (forall n: v. memv n (get_metadata_tree m g) -> memv n result) }
+  = match l with
+    | Nil -> g
+    | Cons m r ->
+        let metadata_tree = get_metadata_tree m g in
+        graph_union metadata_tree (add_metadata_trees_from_list r g)
+    end
+
+  let ghost function get_whole_metadata_forest (g: graph) : graph
+    ensures   { forall m n: v. LM.mem n (get_all_roots g) -> (memv m result <-> memv m (get_metadata_tree n g)) }
+  = add_metadata_trees_from_list (get_all_roots g) g 
+
 end

@@ -275,6 +275,49 @@ def _display_metadata_tree(tree: nx.DiGraph, root_key: str, graph: MSMDiGraph):
     print(f"  {Colors.CYAN}Total edges:{Colors.RESET}  {tree.number_of_edges()}")
     print(f"  {Colors.CYAN}Tree depth:{Colors.RESET}  {nx.dag_longest_path_length(tree) if tree.number_of_nodes() > 0 else 0}")
 
+# --- Menu Handlers ---
+
+def _handle_add_snippet(graph: MSMDiGraph):
+    """Add snippet"""
+    print_header("Add Snippet")
+    try:
+        name = input_prompt("Snippet name (e.g., my_code.py)").strip()
+        extension = input_prompt("Extension (e.g., py, js, txt, mlw)").strip()
+        
+        if not all([name, extension]):
+            print_warning("Operation cancelled. Name and extension cannot be empty.")
+            return
+        
+        # Open vim for content editing
+        print_info("Opening vim editor for snippet content...")
+        print_info("(Save and quit vim with :wq when done)")
+        input_prompt("Press Enter to open vim", Colors.GREEN)
+        
+        content = open_vim_editor("", extension)
+        
+        if not content.strip():
+            print_warning("Operation cancelled. Content cannot be empty.")
+            return
+        
+        category = _prompt_category()
+        
+        snippet_obj = Snippet(name=name, content=content, extension=extension)
+
+        print(f"\n{Colors.BOLD}Now insert metadata to link{Colors.RESET} {Colors.DIM}(must already exist){Colors.RESET}")
+        
+        try:
+            metadata_list = _prompt_metadata_list(category)
+        except ValueError as e:
+            print_warning(f"Operation cancelled. {e}")
+            return
+
+        graph.insert_snippet(snippet_obj, metadata_list, category)
+        
+        print_success(f"Snippet '{Colors.BOLD}{snippet_obj.name}{Colors.RESET}' inserted and linked to {len(metadata_list)} metadata")
+    except (ValidationError, KeyError, ValueError) as e:
+        print_error(f"Error during creation: {e}")
+        print_info("Make sure you inserted at least one metadata and all metadata already exist")
+
 def _handle_add_free_metadata(graph: MSMDiGraph):
     """Add metadata without parent"""
     print_header("Add Metadata (without parent)")
@@ -419,47 +462,6 @@ def _handle_add_metadata_tree(graph: MSMDiGraph):
         print_error(f"An unexpected error occurred: {e}")
         import traceback
         traceback.print_exc()
-
-def _handle_add_snippet(graph: MSMDiGraph):
-    """Add snippet"""
-    print_header("Add Snippet")
-    try:
-        name = input_prompt("Snippet name (e.g., my_code.py)").strip()
-        extension = input_prompt("Extension (e.g., py, js, txt, mlw)").strip()
-        
-        if not all([name, extension]):
-            print_warning("Operation cancelled. Name and extension cannot be empty.")
-            return
-        
-        # Open vim for content editing
-        print_info("Opening vim editor for snippet content...")
-        print_info("(Save and quit vim with :wq when done)")
-        input_prompt("Press Enter to open vim", Colors.GREEN)
-        
-        content = open_vim_editor("", extension)
-        
-        if not content.strip():
-            print_warning("Operation cancelled. Content cannot be empty.")
-            return
-        
-        category = _prompt_category()
-        
-        snippet_obj = Snippet(name=name, content=content, extension=extension)
-
-        print(f"\n{Colors.BOLD}Now insert metadata to link{Colors.RESET} {Colors.DIM}(must already exist){Colors.RESET}")
-        
-        try:
-            metadata_list = _prompt_metadata_list(category)
-        except ValueError as e:
-            print_warning(f"Operation cancelled. {e}")
-            return
-
-        graph.insert_snippet(snippet_obj, metadata_list, category)
-        
-        print_success(f"Snippet '{Colors.BOLD}{snippet_obj.name}{Colors.RESET}' inserted and linked to {len(metadata_list)} metadata")
-    except (ValidationError, KeyError, ValueError) as e:
-        print_error(f"Error during creation: {e}")
-        print_info("Make sure you inserted at least one metadata and all metadata already exist")
 
 def _handle_get_snippet(graph: MSMDiGraph):
     """Get snippet"""
@@ -647,6 +649,40 @@ def _handle_get_metadata_tree(graph: MSMDiGraph):
         import traceback
         traceback.print_exc()
 
+def _handle_get_metadata_forest(graph: MSMDiGraph):
+    """Get and display the entire metadata forest"""
+    print_header("View Metadata Forest (All Trees)")
+    
+    try:
+        print_info("Building metadata forest...")
+        forest = graph.get_whole_metadata_forest()
+        
+        if forest.number_of_nodes() == 0:
+            print_warning("The metadata forest is empty. No metadata found.")
+            return
+
+        # Find all roots within the generated forest graph
+        # These are nodes with an in-degree of 0 IN THE FOREST
+        roots_in_forest = [node for node in forest.nodes() if forest.in_degree(node) == 0]
+
+        if not roots_in_forest:
+            print_error("Forest has nodes but no roots (cycle detected?). Cannot display.")
+            return
+        
+        print_success(f"Found {forest.number_of_nodes()} total metadata nodes across {len(roots_in_forest)} tree(s).")
+
+        # Display each tree starting from its root
+        for i, root_key in enumerate(roots_in_forest):
+            # Reuse the existing tree display function
+            _display_metadata_tree(forest, root_key, graph)
+            if i < len(roots_in_forest) - 1:
+                print(f"\n{Colors.DIM}{'-'*60}{Colors.RESET}\n") # Add a separator
+
+    except Exception as e:
+        print_error(f"Error retrieving metadata forest: {e}")
+        import traceback
+        traceback.print_exc()
+
 def _handle_delete_snippet(graph: MSMDiGraph):
     """Delete a snippet"""
     print_header("Delete Snippet")
@@ -775,7 +811,15 @@ def _handle_exit(graph: MSMDiGraph):
     print_success("Goodbye! 👋")
     sys.exit(0)
 
+# --- Menu Definition ---
+
 MENU_ITEMS = [
+    # --- Add Operations ---
+    {
+        "name": "Add a snippet",
+        "handler": _handle_add_snippet,
+        "icon": "📄"
+    },
     {
         "name": "Add a free metadata",
         "handler": _handle_add_free_metadata,
@@ -791,11 +835,8 @@ MENU_ITEMS = [
         "handler": _handle_add_metadata_tree,
         "icon": "🌲"
     },
-    {
-        "name": "Add a snippet",
-        "handler": _handle_add_snippet,
-        "icon": "📄"
-    },
+    
+    # --- Snippet Query Operations ---
     {
         "name": "Get a snippet by name",
         "handler": _handle_get_snippet,
@@ -816,16 +857,25 @@ MENU_ITEMS = [
         "handler": _handle_get_snippets_intersection,
         "icon": "∩"
     },
+    
+    # --- Metadata Query Operations ---
     {
         "name": "View all root metadata",
         "handler": _handle_get_all_roots,
         "icon": "🌱"
     },
     {
-        "name": "View metadata tree",
+        "name": "View metadata tree (from one root)",
         "handler": _handle_get_metadata_tree,
         "icon": "🌳"
     },
+    {
+        "name": "View metadata forest (All trees)",
+        "handler": _handle_get_metadata_forest,
+        "icon": "🏞️"
+    },
+
+    # --- Delete Operations ---
     {
         "name": "Delete a snippet",
         "handler": _handle_delete_snippet,
@@ -836,6 +886,8 @@ MENU_ITEMS = [
         "handler": _handle_delete_metadata,
         "icon": "🗑️"
     },
+
+    # --- System ---
     {
         "name": "Exit",
         "handler": _handle_exit,
@@ -848,10 +900,24 @@ def print_menu():
     print_header("MSM - Metadata Snippet Manager")
     print(f"{Colors.BOLD}Choose an operation:{Colors.RESET}\n")
     
-    for i, item in enumerate(MENU_ITEMS, 1):
-        icon = item.get("icon", "•")
-        print(f"  {Colors.YELLOW}{i}.{Colors.RESET} {icon}  {item['name']}")
-    print()
+    # Grouping for better readability
+    groups = {
+        "Create": (0, 4),
+        "Query Snippets": (4, 8),
+        "Query Metadata": (8, 11),
+        "Manage": (11, 13),
+        "System": (13, 14)
+    }
+    
+    current_item = 1
+    for group_name, (start, end) in groups.items():
+        print(f"{Colors.BOLD}{Colors.CYAN}--- {group_name} ---{Colors.RESET}")
+        for i in range(start, end):
+            item = MENU_ITEMS[i]
+            icon = item.get("icon", "•")
+            print(f"  {Colors.YELLOW}{current_item}.{Colors.RESET} {icon}  {item['name']}")
+            current_item += 1
+        print() # Add space between groups
 
 def main_loop():
     adb_graph = setup_database_connection()
@@ -872,7 +938,7 @@ def main_loop():
             print_error(f"'{choice}' is not a valid number. Please enter a number between 1 and {len(MENU_ITEMS)}")
         
         # Add a small pause for readability
-        if choice_num != len(MENU_ITEMS): # Don't pause on exit
+        if choice.strip() != str(len(MENU_ITEMS)): # Don't pause on exit
             input_prompt("\nPress Enter to continue...", Colors.DIM)
 
 if __name__ == "__main__":

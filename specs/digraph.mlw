@@ -225,4 +225,33 @@ theory DiGraph
     forall g: graph, v: v, pred: fset v. pred = predecessors v g ->
       (forall u: v. mem u pred <-> (exists e: e. meme e g /\  src e = u /\ dst e = v) )
 
+  let rec function add_edges_from_list (l: list e) (g: graph) : graph
+    requires  { forall e: e. LM.mem e l -> memv (src e) g /\ memv (dst e) g }
+    ensures   { forall v: v. memv v g <-> memv v result }
+    ensures   { forall e: e. meme e g \/ LM.mem e l -> meme e result }
+  = match l with
+    | Nil -> g
+    | Cons e r -> if meme e g
+                  then add_edges_from_list r g
+                  else add_edges_from_list r (inserte e g)
+    end
+
+  let rec function add_vertices_from_list (l: list v) (g: graph) : graph
+    ensures   { forall e: e. meme e g <-> meme e result }
+    ensures   { forall v: v. memv v g \/ LM.mem v l -> memv v result }
+  = match l with
+    | Nil -> g
+    | Cons v r -> if memv v g
+                  then add_vertices_from_list r g
+                  else add_vertices_from_list r (insertv v g) 
+    end
+
+  let function graph_union (g1 g2: graph) : graph
+    requires  { forall v: v. (memv v g1 -> not (memv v g2)) /\ (memv v g2 -> not (memv v g1)) }
+    requires  { forall e: e. (meme e g1 -> not (meme e g2)) /\ (meme e g2 -> not (meme e g1)) }
+    ensures   { forall v: v. memv v g1 \/ memv v g2 -> memv v result }
+    ensures   { forall e: e. meme e g1 \/ meme e g2 -> meme e result }
+  = let g_with_v = add_vertices_from_list (vertices_list g1) g2 in
+    add_edges_from_list (edges_list g1) g_with_v
+
 end

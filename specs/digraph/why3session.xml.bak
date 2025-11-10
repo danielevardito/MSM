@@ -134,6 +134,15 @@
  <goal name="members_predecessors" proved="true">
  <proof prover="1"><result status="valid" time="0.040604" steps="241"/></proof>
  </goal>
+ <goal name="add_edges_from_list&#39;vc" expl="VC for add_edges_from_list" proved="true">
+ <proof prover="1"><result status="valid" time="0.137372" steps="1028"/></proof>
+ </goal>
+ <goal name="add_vertices_from_list&#39;vc" expl="VC for add_vertices_from_list" proved="true">
+ <proof prover="2"><result status="valid" time="0.889474" steps="1658927"/></proof>
+ </goal>
+ <goal name="graph_union&#39;vc" expl="VC for graph_union" proved="true">
+ <proof prover="1"><result status="valid" time="0.088535" steps="510"/></proof>
+ </goal>
 </theory>
 </file>
 </why3session>

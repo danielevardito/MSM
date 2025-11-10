@@ -326,5 +326,17 @@ class MSMDiGraph(ValidatedArangoGraph):
                 if dst_key in reachable:
                     edge_label = self.getelabel(src_key, dst_key)
                     tree.add_edge(src_key, dst_key, label=edge_label)
-
         return tree
+
+    def _add_metadata_trees_from_list(self, l: List[str], g: nx.DiGraph) -> nx.DiGraph:
+        match l:
+            case []: return g
+            case [m, *r]:
+                metadata_tree = self.get_metadata_tree(m)
+                g_rec = self._add_metadata_trees_from_list(r, g)
+                return nx.union(metadata_tree, g_rec)
+
+    def get_whole_metadata_forest(self) -> nx.DiGraph:
+        g_empty = nx.DiGraph()
+        roots_list = self.get_all_roots()
+        return self._add_metadata_trees_from_list(roots_list, g_empty)
